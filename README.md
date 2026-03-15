@@ -40,6 +40,15 @@ RunCat 365 is available for installation on the Microsoft Store.
   - Japanese
   - Spanish
 
+## RunCat Developers' Community
+
+This is a space for RunCat contributors to communicate closely regarding development and operations.
+We welcome anyone interested in contributing to RunCat.
+However, please note that this is a place for discussing features, not for submitting requests.
+For requests, please create an Issue according to the template.
+
+Discord: https://discord.gg/zRk9E24s
+
 ## Contributors
 
 <a href="https://github.com/Kyome22/RunCat365/graphs/contributors">
