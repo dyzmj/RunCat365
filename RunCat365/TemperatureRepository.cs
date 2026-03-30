@@ -43,8 +43,7 @@ namespace RunCat365
     internal class TemperatureRepository
     {
         private readonly List<PerformanceCounter> tempCounters = [];
-        private readonly Queue<float> tempRingBuffer = new();
-        private const int TEMP_BUFFER_LIMIT_SIZE = 60;
+        private float? currentTemperature = null;
 
         internal bool IsAvailable { get; private set; } = true;
 
@@ -84,13 +83,7 @@ namespace RunCat365
                 var values = tempCounters.Select(counter => counter.NextValue()).ToList();
                 var currentKelvin = values.Count > 0 ? values.Max() : 0f;
                 // Convert Kelvin to Celsius
-                var currentCelsius = currentKelvin - 273.15f;
-
-                tempRingBuffer.Enqueue(currentCelsius);
-                if (TEMP_BUFFER_LIMIT_SIZE < tempRingBuffer.Count)
-                {
-                    tempRingBuffer.Dequeue();
-                }
+                currentTemperature = currentKelvin - 273.15f;
             }
             catch
             {
@@ -100,18 +93,18 @@ namespace RunCat365
 
         internal TemperatureInfo? Get()
         {
-            if (!IsAvailable || tempRingBuffer.Count == 0) return null;
+            if (!IsAvailable || !currentTemperature.HasValue) return null;
 
             return new TemperatureInfo
             {
-                Current = tempRingBuffer.Last()
+                Current = currentTemperature.Value
             };
         }
 
         internal float? GetLatestCelsius()
         {
-            if (!IsAvailable || tempRingBuffer.Count == 0) return null;
-            return tempRingBuffer.Last();
+            if (!IsAvailable || !currentTemperature.HasValue) return null;
+            return currentTemperature;
         }
 
         internal void Close()
