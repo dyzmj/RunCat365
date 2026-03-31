@@ -262,7 +262,7 @@
     <value>Usar</value>
   </data>
   <data name="CustomRunner_Requirements" xml:space="preserve">
-    <value>Formato: PNG | Alto: 36px | Ancho: 10-100px</value>
+    <value>Formato: PNG | Dimensiones máx: 32x32px</value>
   </data>
   <data name="CustomRunner_ErrorEmptyName" xml:space="preserve">
     <value>Por favor, introduzca un nombre de runner.</value>

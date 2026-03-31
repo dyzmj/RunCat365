@@ -262,7 +262,7 @@
     <value>使用</value>
   </data>
   <data name="CustomRunner_Requirements" xml:space="preserve">
-    <value>形式: PNG | 高さ: 36px | 幅: 10-100px</value>
+    <value>形式: PNG | 最大サイズ: 32x32px</value>
   </data>
   <data name="CustomRunner_ErrorEmptyName" xml:space="preserve">
     <value>ランナー名を入力してください。</value>

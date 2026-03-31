@@ -4,9 +4,9 @@ namespace RunCat365
 {
     internal class CustomRunnerRepository
     {
-        private const int MAX_FRAME_HEIGHT = 36;
+        private const int MAX_FRAME_HEIGHT = 32;
         private const int MIN_FRAME_WIDTH = 10;
-        private const int MAX_FRAME_WIDTH = 100;
+        private const int MAX_FRAME_WIDTH = 32;
         private const int MAX_FRAME_COUNT = 30;
         private const string PROFILES_FILE_NAME = "profiles.json";
 

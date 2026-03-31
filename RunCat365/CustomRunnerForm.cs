@@ -1,4 +1,6 @@
 using RunCat365.Properties;
+using System.Drawing.Drawing2D;
+using FormsTimer = System.Windows.Forms.Timer;
 
 namespace RunCat365
 {
@@ -9,13 +11,19 @@ namespace RunCat365
         private readonly Action revertToBuiltInRunner;
         private readonly ListBox runnerListBox;
         private readonly TextBox nameTextBox;
+        private readonly Label nameWarningLabel;
         private readonly FlowLayoutPanel framePanel;
         private readonly Button addFramesButton;
         private readonly Button saveButton;
         private readonly Button deleteButton;
         private readonly Button useButton;
-        private readonly Label requirementsLabel;
+        private readonly PictureBox previewPictureBox;
+        private readonly TrackBar speedSlider;
+        private readonly FormsTimer previewTimer;
+
         private readonly List<Bitmap> pendingFrames = [];
+        private readonly List<Bitmap> recoloredFrames = []; // For accessibility and preview
+        private int currentPreviewFrame = 0;
 
         internal CustomRunnerForm(
             CustomRunnerRepository repository,
@@ -29,13 +37,15 @@ namespace RunCat365
 
             Text = Strings.Window_CustomRunners;
             Icon = Resources.AppIcon;
-            ClientSize = new Size(580, 400);
+            ClientSize = new Size(700, 480);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             StartPosition = FormStartPosition.CenterScreen;
             BackColor = Color.FromArgb(45, 45, 45);
             ForeColor = Color.White;
 
+            // Problem 5: Perfect visual alignment mapping based on fixed ClientSize 700x480
+            // Margins: 12px padding around container edges
             var listLabel = new Label
             {
                 Text = Strings.CustomRunner_AddedRunners,
@@ -48,18 +58,19 @@ namespace RunCat365
             runnerListBox = new ListBox
             {
                 Location = new Point(12, 35),
-                Size = new Size(160, 310),
+                Size = new Size(160, 391), // Clean margin to bottom buttons (480 - 12 - 30 - 12) = 426 -> 35 + 391 = 426
                 BackColor = Color.FromArgb(60, 60, 60),
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 9F),
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
+                IntegralHeight = false
             };
             runnerListBox.SelectedIndexChanged += RunnerListBoxSelectedIndexChanged;
 
             var nameLabel = new Label
             {
                 Text = Strings.CustomRunner_Name,
-                Location = new Point(190, 12),
+                Location = new Point(184, 12),
                 Size = new Size(100, 20),
                 ForeColor = Color.FromArgb(200, 200, 200),
                 Font = new Font("Segoe UI", 9F)
@@ -67,20 +78,31 @@ namespace RunCat365
 
             nameTextBox = new TextBox
             {
-                Location = new Point(290, 10),
-                Size = new Size(270, 24),
+                Location = new Point(284, 10),
+                Size = new Size(404, 24), // Extends up to 700 - 12 = 688
                 BackColor = Color.FromArgb(60, 60, 60),
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 9F),
                 BorderStyle = BorderStyle.FixedSingle,
                 MaxLength = 30
             };
+            nameTextBox.TextChanged += (s, e) => ValidateFormState();
 
-            requirementsLabel = new Label
+            nameWarningLabel = new Label
+            {
+                Text = "⚠️ Profile exists. Saving will overwrite.",
+                Location = new Point(400, 40),
+                Size = new Size(240, 18),
+                ForeColor = Color.FromArgb(220, 160, 60),
+                Font = new Font("Segoe UI", 7.5F),
+                Visible = false
+            };
+
+            var requirementsLabel = new Label
             {
                 Text = Strings.CustomRunner_Requirements,
-                Location = new Point(190, 40),
-                Size = new Size(370, 18),
+                Location = new Point(184, 40),
+                Size = new Size(210, 18),
                 ForeColor = Color.FromArgb(150, 150, 150),
                 Font = new Font("Segoe UI", 7.5F)
             };
@@ -88,7 +110,7 @@ namespace RunCat365
             addFramesButton = new Button
             {
                 Text = Strings.CustomRunner_AddFrames,
-                Location = new Point(190, 64),
+                Location = new Point(184, 64),
                 Size = new Size(110, 28),
                 FlatStyle = FlatStyle.Flat,
                 BackColor = Color.FromArgb(70, 70, 70),
@@ -102,7 +124,7 @@ namespace RunCat365
             var clearFramesButton = new Button
             {
                 Text = Strings.CustomRunner_ClearFrames,
-                Location = new Point(310, 64),
+                Location = new Point(304, 64),
                 Size = new Size(90, 28),
                 FlatStyle = FlatStyle.Flat,
                 BackColor = Color.FromArgb(70, 70, 70),
@@ -115,18 +137,62 @@ namespace RunCat365
 
             framePanel = new FlowLayoutPanel
             {
-                Location = new Point(190, 100),
-                Size = new Size(370, 245),
+                Location = new Point(184, 100),
+                Size = new Size(350, 326), // Bottom perfectly aligns with bottom of listbox (100+326 = 426)
                 AutoScroll = true,
                 BackColor = Color.FromArgb(55, 55, 55),
                 BorderStyle = BorderStyle.FixedSingle,
                 WrapContents = true
             };
 
+            // Problem 3: Preview Panel Configuration
+            var previewLabel = new Label
+            {
+                Text = "Preview:",
+                Location = new Point(546, 100),
+                Size = new Size(142, 18),
+                ForeColor = Color.FromArgb(200, 200, 200),
+                Font = new Font("Segoe UI", 8.5F)
+            };
+
+            previewPictureBox = new PictureBox
+            {
+                Location = new Point(546, 122),
+                Size = new Size(142, 142),
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.FromArgb(55, 55, 55),
+                SizeMode = PictureBoxSizeMode.CenterImage
+            };
+
+            var speedLabel = new Label
+            {
+                Text = "Preview Speed:",
+                Location = new Point(546, 276),
+                Size = new Size(142, 18),
+                ForeColor = Color.FromArgb(200, 200, 200),
+                Font = new Font("Segoe UI", 8.5F)
+            };
+
+            speedSlider = new TrackBar
+            {
+                Location = new Point(546, 298),
+                Size = new Size(142, 45),
+                Minimum = 1,
+                Maximum = 10,
+                Value = 5,
+                TickStyle = TickStyle.None
+            };
+            speedSlider.ValueChanged += (s, e) => {
+                if (speedSlider.Value > 0)
+                {
+                    previewTimer.Interval = Math.Max(20, 500 / speedSlider.Value);
+                }
+            };
+
             deleteButton = new Button
             {
                 Text = Strings.CustomRunner_Delete,
-                Location = new Point(12, 358),
+                Location = new Point(12, 438), // 480 - 12 - 30
                 Size = new Size(75, 30),
                 FlatStyle = FlatStyle.Flat,
                 BackColor = Color.FromArgb(120, 40, 40),
@@ -141,7 +207,7 @@ namespace RunCat365
             useButton = new Button
             {
                 Text = Strings.CustomRunner_Use,
-                Location = new Point(97, 358),
+                Location = new Point(97, 438),
                 Size = new Size(75, 30),
                 FlatStyle = FlatStyle.Flat,
                 BackColor = Color.FromArgb(40, 100, 60),
@@ -156,13 +222,14 @@ namespace RunCat365
             saveButton = new Button
             {
                 Text = Strings.CustomRunner_Save,
-                Location = new Point(475, 358),
+                Location = new Point(603, 438), // 700 - 12 - 85
                 Size = new Size(85, 30),
                 FlatStyle = FlatStyle.Flat,
                 BackColor = Color.FromArgb(50, 90, 160),
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Enabled = false // Disabled by default for Problem 2 validation
             };
             saveButton.FlatAppearance.BorderColor = Color.FromArgb(70, 120, 200);
             saveButton.Click += SaveButtonClick;
@@ -172,20 +239,30 @@ namespace RunCat365
                 runnerListBox,
                 nameLabel,
                 nameTextBox,
+                nameWarningLabel,
                 requirementsLabel,
                 addFramesButton,
                 clearFramesButton,
                 framePanel,
+                previewLabel,
+                previewPictureBox,
+                speedLabel,
+                speedSlider,
                 deleteButton,
                 useButton,
                 saveButton
             ]);
 
+            previewTimer = new FormsTimer { Interval = 100 };
+            previewTimer.Tick += PreviewTimerTick;
+
             RefreshRunnerList();
+            ValidateFormState();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            previewTimer.Stop();
             base.OnFormClosing(e);
             ClearPendingFrames();
         }
@@ -249,29 +326,43 @@ namespace RunCat365
         {
             framePanel.SuspendLayout();
             framePanel.Controls.Clear();
+            previewTimer.Stop();
+            currentPreviewFrame = 0;
+            previewPictureBox.Image = null;
+
+            // Problem 4: Recolor internal silhouettes so they don't blend into dark mode backgrounds
+            foreach (var frame in recoloredFrames)
+            {
+                frame.Dispose();
+            }
+            recoloredFrames.Clear();
 
             for (int i = 0; i < pendingFrames.Count; i++)
             {
+                // Generate a white-silhouette contrast representation dynamically
+                var recolored = pendingFrames[i].Recolor(Color.White);
+                recoloredFrames.Add(recolored);
+
                 var container = new Panel
                 {
-                    Size = new Size(64, 70),
+                    Size = new Size(70, 76),
                     Margin = new Padding(4)
                 };
 
                 var pictureBox = new PictureBox
                 {
                     Size = new Size(48, 48),
-                    Location = new Point(8, 0),
+                    Location = new Point(11, 0),
                     SizeMode = PictureBoxSizeMode.Zoom,
-                    Image = pendingFrames[i],
+                    Image = recolored,
                     BackColor = Color.FromArgb(40, 40, 40)
                 };
 
                 var indexLabel = new Label
                 {
                     Text = $"{i}",
-                    Size = new Size(64, 18),
-                    Location = new Point(0, 50),
+                    Size = new Size(70, 18),
+                    Location = new Point(0, 52),
                     TextAlign = ContentAlignment.TopCenter,
                     ForeColor = Color.FromArgb(170, 170, 170),
                     Font = new Font("Segoe UI", 7.5F)
@@ -283,23 +374,42 @@ namespace RunCat365
             }
 
             framePanel.ResumeLayout();
+
+            if (recoloredFrames.Count > 0)
+            {
+                previewPictureBox.Image = recoloredFrames[0];
+                if (recoloredFrames.Count > 1)
+                {
+                    previewTimer.Start();
+                }
+            }
+            ValidateFormState();
+        }
+
+        private void PreviewTimerTick(object? sender, EventArgs e)
+        {
+            if (recoloredFrames.Count < 2) return;
+            currentPreviewFrame = (currentPreviewFrame + 1) % recoloredFrames.Count;
+            previewPictureBox.Image = recoloredFrames[currentPreviewFrame];
+        }
+
+        // Problem 2: Real-time UI validation explicitly preventing bad inputs immediately
+        private void ValidateFormState()
+        {
+            var name = nameTextBox.Text.Trim();
+            bool hasValidName = !string.IsNullOrWhiteSpace(name);
+            bool hasValidFrames = pendingFrames.Count >= 2;
+            
+            saveButton.Enabled = hasValidName && hasValidFrames;
+            
+            nameWarningLabel.Visible = hasValidName && repository.Exists(name);
         }
 
         private void SaveButtonClick(object? sender, EventArgs e)
         {
             var name = nameTextBox.Text.Trim();
-
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                ShowWarning(Strings.CustomRunner_ErrorEmptyName);
-                return;
-            }
-
-            if (pendingFrames.Count < 2)
-            {
-                ShowWarning(Strings.CustomRunner_ErrorMinFrames);
-                return;
-            }
+            if (string.IsNullOrWhiteSpace(name)) return;
+            if (pendingFrames.Count < 2) return;
 
             if (repository.Exists(name))
             {
@@ -324,6 +434,7 @@ namespace RunCat365
                         break;
                     }
                 }
+                ValidateFormState();
             }
         }
 
@@ -360,11 +471,7 @@ namespace RunCat365
                 frame.Dispose();
             }
             pendingFrames.Clear();
-        }
-
-        private static void ShowWarning(string message)
-        {
-            MessageBox.Show(message, Strings.Message_Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            // We don't dispose recoloredFrames here, it's done during RefreshFramePanel
         }
     }
 }
