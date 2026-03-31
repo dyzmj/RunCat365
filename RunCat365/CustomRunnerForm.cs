@@ -102,7 +102,7 @@ namespace RunCat365
             {
                 Text = Strings.CustomRunner_Requirements,
                 Location = new Point(184, 40),
-                Size = new Size(210, 18),
+                Size = new Size(400, 18),
                 ForeColor = Color.FromArgb(150, 150, 150),
                 Font = new Font("Segoe UI", 7.5F)
             };
