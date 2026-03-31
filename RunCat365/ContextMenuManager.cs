@@ -1,4 +1,4 @@
-﻿// Copyright 2025 Takuto Nakamura
+// Copyright 2025 Takuto Nakamura
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ namespace RunCat365
         private readonly Lock iconLock = new();
         private int current = 0;
         private EndlessGameForm? endlessGameForm;
+        private CustomRunnerForm? customRunnerForm;
 
         internal ContextMenuManager(
             Func<Runner> getRunner,
@@ -40,7 +41,10 @@ namespace RunCat365
             Func<bool> getLaunchAtStartup,
             Func<bool, bool> toggleLaunchAtStartup,
             Action openRepository,
-            Action onExit
+            Action onExit,
+            CustomRunnerRepository customRunnerRepository,
+            Action<string> applyCustomRunner,
+            Action revertToBuiltInRunner
         )
         {
             systemInfoMenu.Text = "-\n-\n-\n-\n-";
@@ -127,6 +131,11 @@ namespace RunCat365
                 launchAtStartupMenu
             );
 
+            var customRunnersMenu = new CustomToolStripMenuItem(Strings.Menu_CustomRunners);
+            customRunnersMenu.Click += (sender, e) => ShowOrActivateCustomRunnerWindow(
+                customRunnerRepository, applyCustomRunner, revertToBuiltInRunner
+            );
+
             var endlessGameMenu = new CustomToolStripMenuItem(Strings.Menu_EndlessGame);
             endlessGameMenu.Click += (sender, e) => ShowOrActivateGameWindow(getSystemTheme);
 
@@ -154,6 +163,7 @@ namespace RunCat365
                 systemInfoMenu,
                 new ToolStripSeparator(),
                 runnersMenu,
+                customRunnersMenu,
                 new ToolStripSeparator(),
                 settingsMenu,
                 informationMenu,
@@ -234,6 +244,32 @@ namespace RunCat365
             }
         }
 
+        internal void SetCustomIcons(List<Bitmap> frames, Theme systemTheme, Theme manualTheme)
+        {
+            var theme = manualTheme == Theme.System ? systemTheme : manualTheme;
+            var color = theme.GetContrastColor();
+            var list = new List<Icon>(frames.Count);
+            foreach (var frame in frames)
+            {
+                if (theme == Theme.Light)
+                {
+                    list.Add(frame.ToIcon());
+                }
+                else
+                {
+                    using var recolored = frame.Recolor(color);
+                    list.Add(recolored.ToIcon());
+                }
+            }
+
+            lock (iconLock)
+            {
+                icons.Clear();
+                icons.AddRange(list);
+                current = 0;
+            }
+        }
+
         private static void HandleStartupMenuClick(object? sender, Func<bool, bool> toggleLaunchAtStartup)
         {
             if (sender is null) return;
@@ -266,6 +302,27 @@ namespace RunCat365
             else
             {
                 endlessGameForm.Activate();
+            }
+        }
+
+        private void ShowOrActivateCustomRunnerWindow(
+            CustomRunnerRepository repository,
+            Action<string> applyCustomRunner,
+            Action revertToBuiltInRunner
+        )
+        {
+            if (customRunnerForm is null)
+            {
+                customRunnerForm = new CustomRunnerForm(repository, applyCustomRunner, revertToBuiltInRunner);
+                customRunnerForm.FormClosed += (sender, e) =>
+                {
+                    customRunnerForm = null;
+                };
+                customRunnerForm.Show();
+            }
+            else
+            {
+                customRunnerForm.Activate();
             }
         }
 
@@ -323,6 +380,7 @@ namespace RunCat365
                 }
 
                 endlessGameForm?.Dispose();
+                customRunnerForm?.Dispose();
             }
         }
 

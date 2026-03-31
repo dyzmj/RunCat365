@@ -234,4 +234,46 @@
   <data name="Game_NewRecord" xml:space="preserve">
     <value>新記録</value>
   </data>
+  <data name="Menu_CustomRunners" xml:space="preserve">
+    <value>自作ランナー...</value>
+  </data>
+  <data name="Window_CustomRunners" xml:space="preserve">
+    <value>自作ランナー</value>
+  </data>
+  <data name="CustomRunner_AddedRunners" xml:space="preserve">
+    <value>追加済みランナー:</value>
+  </data>
+  <data name="CustomRunner_Name" xml:space="preserve">
+    <value>ランナー名:</value>
+  </data>
+  <data name="CustomRunner_AddFrames" xml:space="preserve">
+    <value>フレーム追加...</value>
+  </data>
+  <data name="CustomRunner_ClearFrames" xml:space="preserve">
+    <value>クリア</value>
+  </data>
+  <data name="CustomRunner_Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="CustomRunner_Delete" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="CustomRunner_Use" xml:space="preserve">
+    <value>使用</value>
+  </data>
+  <data name="CustomRunner_Requirements" xml:space="preserve">
+    <value>形式: PNG | 高さ: 36px | 幅: 10-100px</value>
+  </data>
+  <data name="CustomRunner_ErrorEmptyName" xml:space="preserve">
+    <value>ランナー名を入力してください。</value>
+  </data>
+  <data name="CustomRunner_ErrorMinFrames" xml:space="preserve">
+    <value>2フレーム以上追加してください。</value>
+  </data>
+  <data name="CustomRunner_ConfirmOverwrite" xml:space="preserve">
+    <value>同名のランナーが既に存在します。上書きしますか？</value>
+  </data>
+  <data name="CustomRunner_ConfirmDelete" xml:space="preserve">
+    <value>ランナー「{0}」を削除しますか？</value>
+  </data>
 </root>

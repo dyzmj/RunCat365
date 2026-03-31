@@ -395,5 +395,89 @@ namespace RunCat365.Properties {
                 return ResourceManager.GetString("SystemInfo_Maximum", resourceCulture);
             }
         }
+
+        internal static string Menu_CustomRunners {
+            get {
+                return ResourceManager.GetString("Menu_CustomRunners", resourceCulture);
+            }
+        }
+
+        internal static string Window_CustomRunners {
+            get {
+                return ResourceManager.GetString("Window_CustomRunners", resourceCulture);
+            }
+        }
+
+        internal static string CustomRunner_AddedRunners {
+            get {
+                return ResourceManager.GetString("CustomRunner_AddedRunners", resourceCulture);
+            }
+        }
+
+        internal static string CustomRunner_Name {
+            get {
+                return ResourceManager.GetString("CustomRunner_Name", resourceCulture);
+            }
+        }
+
+        internal static string CustomRunner_AddFrames {
+            get {
+                return ResourceManager.GetString("CustomRunner_AddFrames", resourceCulture);
+            }
+        }
+
+        internal static string CustomRunner_ClearFrames {
+            get {
+                return ResourceManager.GetString("CustomRunner_ClearFrames", resourceCulture);
+            }
+        }
+
+        internal static string CustomRunner_Save {
+            get {
+                return ResourceManager.GetString("CustomRunner_Save", resourceCulture);
+            }
+        }
+
+        internal static string CustomRunner_Delete {
+            get {
+                return ResourceManager.GetString("CustomRunner_Delete", resourceCulture);
+            }
+        }
+
+        internal static string CustomRunner_Use {
+            get {
+                return ResourceManager.GetString("CustomRunner_Use", resourceCulture);
+            }
+        }
+
+        internal static string CustomRunner_Requirements {
+            get {
+                return ResourceManager.GetString("CustomRunner_Requirements", resourceCulture);
+            }
+        }
+
+        internal static string CustomRunner_ErrorEmptyName {
+            get {
+                return ResourceManager.GetString("CustomRunner_ErrorEmptyName", resourceCulture);
+            }
+        }
+
+        internal static string CustomRunner_ErrorMinFrames {
+            get {
+                return ResourceManager.GetString("CustomRunner_ErrorMinFrames", resourceCulture);
+            }
+        }
+
+        internal static string CustomRunner_ConfirmOverwrite {
+            get {
+                return ResourceManager.GetString("CustomRunner_ConfirmOverwrite", resourceCulture);
+            }
+        }
+
+        internal static string CustomRunner_ConfirmDelete {
+            get {
+                return ResourceManager.GetString("CustomRunner_ConfirmDelete", resourceCulture);
+            }
+        }
     }
 }
