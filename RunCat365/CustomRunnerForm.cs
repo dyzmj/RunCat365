@@ -91,10 +91,11 @@ namespace RunCat365
             nameWarningLabel = new Label
             {
                 Text = "⚠️ Profile exists. Saving will overwrite.",
-                Location = new Point(400, 40),
+                Location = new Point(448, 40),
                 Size = new Size(240, 18),
                 ForeColor = Color.FromArgb(220, 160, 60),
                 Font = new Font("Segoe UI", 7.5F),
+                TextAlign = ContentAlignment.TopRight,
                 Visible = false
             };
 
