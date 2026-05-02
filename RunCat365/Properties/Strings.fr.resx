@@ -234,7 +234,16 @@
   <data name="Game_NewRecord" xml:space="preserve">
     <value>Nouveau record</value>
   </data>
+  <data name="SystemInfo_ThermalZone" xml:space="preserve">
+    <value>Zone thermique</value>
+  </data>
   <data name="SystemInfo_Temperature" xml:space="preserve">
     <value>Température</value>
+  </data>
+  <data name="SystemInfo_TemperatureCelsiusFormat" xml:space="preserve">
+    <value>{0:f1}°C</value>
+  </data>
+  <data name="SystemInfo_TemperatureFahrenheitFormat" xml:space="preserve">
+    <value>{0:f1}°F</value>
   </data>
 </root>

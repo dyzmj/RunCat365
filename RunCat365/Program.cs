@@ -58,14 +58,13 @@ namespace RunCat365
         private readonly CPURepository cpuRepository;
         private readonly GPURepository gpuRepository;
         private readonly MemoryRepository memoryRepository;
+        private readonly TemperatureRepository temperatureRepository;
         private readonly StorageRepository storageRepository;
         private readonly NetworkRepository networkRepository;
-        private readonly TemperatureRepository temperatureRepository;
         private readonly LaunchAtStartupManager launchAtStartupManager;
         private readonly ContextMenuManager contextMenuManager;
         private readonly FormsTimer fetchTimer;
         private readonly FormsTimer animateTimer;
-        private readonly FormsTimer temperatureFetchTimer;
         private Runner runner = Runner.Cat;
         private Theme manualTheme = Theme.System;
         private FPSMaxLimit fpsMaxLimit = FPSMaxLimit.FPS40;
@@ -85,9 +84,9 @@ namespace RunCat365
             cpuRepository = new CPURepository();
             gpuRepository = new GPURepository();
             memoryRepository = new MemoryRepository();
+            temperatureRepository = new TemperatureRepository();
             storageRepository = new StorageRepository();
             networkRepository = new NetworkRepository();
-            temperatureRepository = new TemperatureRepository();
             launchAtStartupManager = new LaunchAtStartupManager();
 
             ResolveSpeedSource();
@@ -122,13 +121,6 @@ namespace RunCat365
             };
             fetchTimer.Tick += new EventHandler(FetchTick);
             fetchTimer.Start();
-
-            temperatureFetchTimer = new FormsTimer
-            {
-                Interval = 5000
-            };
-            temperatureFetchTimer.Tick += new EventHandler(TemperatureFetchTick);
-            temperatureFetchTimer.Start();
 
             ShowBalloonTipIfNeeded();
         }
@@ -234,7 +226,7 @@ namespace RunCat365
             contextMenuManager.AdvanceFrame();
         }
 
-        private string GetInfoDescription(CPUInfo cpuInfo, GPUInfo? gpuInfo, MemoryInfo memoryInfo)
+        private string GetInfoDescription(CPUInfo cpuInfo, GPUInfo? gpuInfo, MemoryInfo memoryInfo, List<TemperatureInfo> temperatureInfoList)
         {
             var baseDesc = speedSource switch
             {
@@ -244,12 +236,8 @@ namespace RunCat365
                 _ => "",
             };
 
-            var tempCelsius = temperatureRepository.GetLatestCelsius();
-            if (tempCelsius.HasValue)
-            {
-                return $"{baseDesc} | Temp: {(int)Math.Round(tempCelsius.Value)}°C";
-            }
-            return baseDesc;
+            var temperatureDescription = temperatureInfoList.GetDescription();
+            return string.IsNullOrEmpty(temperatureDescription) ? baseDesc : $"{baseDesc} | {temperatureDescription}";
         }
 
         private int CalculateInterval(CPUInfo cpuInfo, GPUInfo? gpuInfo, MemoryInfo memoryInfo)
@@ -270,10 +258,11 @@ namespace RunCat365
             var cpuInfo = cpuRepository.Get();
             var gpuInfo = gpuRepository.Get();
             var memoryInfo = memoryRepository.Get();
+            var temperatureInfoList = temperatureRepository.Get();
             var storageInfo = storageRepository.Get();
             var networkInfo = networkRepository.Get();
 
-            contextMenuManager.SetNotifyIconText(GetInfoDescription(cpuInfo, gpuInfo, memoryInfo));
+            contextMenuManager.SetNotifyIconText(GetInfoDescription(cpuInfo, gpuInfo, memoryInfo, temperatureInfoList));
 
             var systemInfoValues = new List<string>();
             systemInfoValues.AddRange(cpuInfo.GenerateIndicator());
@@ -282,10 +271,9 @@ namespace RunCat365
                 systemInfoValues.AddRange(gpuInfo.Value.GenerateIndicator());
             }
             systemInfoValues.AddRange(memoryInfo.GenerateIndicator());
-            var tempInfo = temperatureRepository.Get();
-            if (tempInfo.HasValue)
+            if (temperatureInfoList.Count > 0)
             {
-                systemInfoValues.AddRange(tempInfo.Value.GenerateIndicator());
+                systemInfoValues.AddRange(temperatureInfoList.GenerateIndicator());
             }
             systemInfoValues.AddRange(storageInfo.GenerateIndicator());
             systemInfoValues.AddRange(networkInfo.GenerateIndicator());
@@ -301,15 +289,11 @@ namespace RunCat365
             fetchCounter += 1;
             if (fetchCounter < FETCH_COUNTER_SIZE) return;
             fetchCounter = 0;
+            temperatureRepository.Update();
             var interval = FetchSystemInfo();
             animateTimer.Stop();
             animateTimer.Interval = interval;
             animateTimer.Start();
-        }
-
-        private void TemperatureFetchTick(object? state, EventArgs e)
-        {
-            temperatureRepository.Update();
         }
 
         protected override void Dispose(bool disposing)
@@ -322,10 +306,9 @@ namespace RunCat365
                 animateTimer?.Dispose();
                 fetchTimer?.Stop();
                 fetchTimer?.Dispose();
-                temperatureFetchTimer?.Stop();
-                temperatureFetchTimer?.Dispose();
 
                 cpuRepository?.Close();
+                gpuRepository?.Close();
                 temperatureRepository?.Close();
 
                 contextMenuManager?.HideNotifyIcon();
