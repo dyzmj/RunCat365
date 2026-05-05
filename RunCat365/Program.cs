@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Takuto Nakamura
+// Copyright 2020 Takuto Nakamura
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -58,6 +58,7 @@ namespace RunCat365
         private readonly CPURepository cpuRepository;
         private readonly GPURepository gpuRepository;
         private readonly MemoryRepository memoryRepository;
+        private readonly TemperatureRepository temperatureRepository;
         private readonly StorageRepository storageRepository;
         private readonly NetworkRepository networkRepository;
         private readonly LaunchAtStartupManager launchAtStartupManager;
@@ -83,6 +84,7 @@ namespace RunCat365
             cpuRepository = new CPURepository();
             gpuRepository = new GPURepository();
             memoryRepository = new MemoryRepository();
+            temperatureRepository = new TemperatureRepository();
             storageRepository = new StorageRepository();
             networkRepository = new NetworkRepository();
             launchAtStartupManager = new LaunchAtStartupManager();
@@ -224,15 +226,18 @@ namespace RunCat365
             contextMenuManager.AdvanceFrame();
         }
 
-        private string GetInfoDescription(CPUInfo cpuInfo, GPUInfo? gpuInfo, MemoryInfo memoryInfo)
+        private string GetInfoDescription(CPUInfo cpuInfo, GPUInfo? gpuInfo, MemoryInfo memoryInfo, TemperatureInfo? temperatureInfo)
         {
-            return speedSource switch
+            var baseDescription = speedSource switch
             {
                 SpeedSource.CPU => cpuInfo.GetDescription(),
                 SpeedSource.GPU => gpuInfo?.GetDescription() ?? "",
                 SpeedSource.Memory => memoryInfo.GetDescription(),
                 _ => "",
             };
+
+            var temperatureDescription = temperatureInfo?.GetDescription() ?? "";
+            return string.IsNullOrEmpty(temperatureDescription) ? baseDescription : $"{baseDescription}\n{temperatureDescription}";
         }
 
         private int CalculateInterval(CPUInfo cpuInfo, GPUInfo? gpuInfo, MemoryInfo memoryInfo)
@@ -253,10 +258,11 @@ namespace RunCat365
             var cpuInfo = cpuRepository.Get();
             var gpuInfo = gpuRepository.Get();
             var memoryInfo = memoryRepository.Get();
+            var temperatureInfo = temperatureRepository.Get();
             var storageInfo = storageRepository.Get();
             var networkInfo = networkRepository.Get();
 
-            contextMenuManager.SetNotifyIconText(GetInfoDescription(cpuInfo, gpuInfo, memoryInfo));
+            contextMenuManager.SetNotifyIconText(GetInfoDescription(cpuInfo, gpuInfo, memoryInfo, temperatureInfo));
 
             var systemInfoValues = new List<string>();
             systemInfoValues.AddRange(cpuInfo.GenerateIndicator());
@@ -265,6 +271,10 @@ namespace RunCat365
                 systemInfoValues.AddRange(gpuInfo.Value.GenerateIndicator());
             }
             systemInfoValues.AddRange(memoryInfo.GenerateIndicator());
+            if (temperatureInfo.HasValue)
+            {
+                systemInfoValues.AddRange(temperatureInfo.Value.GenerateIndicator());
+            }
             systemInfoValues.AddRange(storageInfo.GenerateIndicator());
             systemInfoValues.AddRange(networkInfo.GenerateIndicator());
             contextMenuManager.SetSystemInfoMenuText(string.Join("\n", [.. systemInfoValues]));
@@ -279,6 +289,7 @@ namespace RunCat365
             fetchCounter += 1;
             if (fetchCounter < FETCH_COUNTER_SIZE) return;
             fetchCounter = 0;
+            temperatureRepository.Update();
             var interval = FetchSystemInfo();
             animateTimer.Stop();
             animateTimer.Interval = interval;
@@ -297,6 +308,8 @@ namespace RunCat365
                 fetchTimer?.Dispose();
 
                 cpuRepository?.Close();
+                gpuRepository?.Close();
+                temperatureRepository?.Close();
 
                 contextMenuManager?.HideNotifyIcon();
                 contextMenuManager?.Dispose();
