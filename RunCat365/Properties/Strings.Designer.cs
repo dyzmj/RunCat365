@@ -396,12 +396,6 @@ namespace RunCat365.Properties {
             }
         }
 
-        internal static string SystemInfo_ThermalZone {
-            get {
-                return ResourceManager.GetString("SystemInfo_ThermalZone", resourceCulture);
-            }
-        }
-
         internal static string SystemInfo_Temperature {
             get {
                 return ResourceManager.GetString("SystemInfo_Temperature", resourceCulture);

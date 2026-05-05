@@ -226,7 +226,7 @@ namespace RunCat365
             contextMenuManager.AdvanceFrame();
         }
 
-        private string GetInfoDescription(CPUInfo cpuInfo, GPUInfo? gpuInfo, MemoryInfo memoryInfo, List<TemperatureInfo> temperatureInfoList)
+        private string GetInfoDescription(CPUInfo cpuInfo, GPUInfo? gpuInfo, MemoryInfo memoryInfo, TemperatureInfo? temperatureInfo)
         {
             var baseDesc = speedSource switch
             {
@@ -236,7 +236,7 @@ namespace RunCat365
                 _ => "",
             };
 
-            var temperatureDescription = temperatureInfoList.GetDescription();
+            var temperatureDescription = temperatureInfo?.GetDescription() ?? "";
             return string.IsNullOrEmpty(temperatureDescription) ? baseDesc : $"{baseDesc} | {temperatureDescription}";
         }
 
@@ -258,11 +258,11 @@ namespace RunCat365
             var cpuInfo = cpuRepository.Get();
             var gpuInfo = gpuRepository.Get();
             var memoryInfo = memoryRepository.Get();
-            var temperatureInfoList = temperatureRepository.Get();
+            var temperatureInfo = temperatureRepository.Get();
             var storageInfo = storageRepository.Get();
             var networkInfo = networkRepository.Get();
 
-            contextMenuManager.SetNotifyIconText(GetInfoDescription(cpuInfo, gpuInfo, memoryInfo, temperatureInfoList));
+            contextMenuManager.SetNotifyIconText(GetInfoDescription(cpuInfo, gpuInfo, memoryInfo, temperatureInfo));
 
             var systemInfoValues = new List<string>();
             systemInfoValues.AddRange(cpuInfo.GenerateIndicator());
@@ -271,9 +271,9 @@ namespace RunCat365
                 systemInfoValues.AddRange(gpuInfo.Value.GenerateIndicator());
             }
             systemInfoValues.AddRange(memoryInfo.GenerateIndicator());
-            if (temperatureInfoList.Count > 0)
+            if (temperatureInfo.HasValue)
             {
-                systemInfoValues.AddRange(temperatureInfoList.GenerateIndicator());
+                systemInfoValues.AddRange(temperatureInfo.Value.GenerateIndicator());
             }
             systemInfoValues.AddRange(storageInfo.GenerateIndicator());
             systemInfoValues.AddRange(networkInfo.GenerateIndicator());

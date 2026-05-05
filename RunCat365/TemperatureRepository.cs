@@ -20,35 +20,24 @@ namespace RunCat365
 {
     struct TemperatureInfo
     {
-        internal string Name { get; set; }
-        internal float Celsius { get; set; }
+        internal float AverageCelsius { get; set; }
+        internal float MaximumCelsius { get; set; }
     }
 
     internal static class TemperatureInfoExtension
     {
-        internal static string GetDescription(this List<TemperatureInfo> temperatureInfoList)
+        internal static string GetDescription(this TemperatureInfo temperatureInfo)
         {
-            if (temperatureInfoList.Count == 0) return "";
-
-            var highestTemperatureCelsius = temperatureInfoList.Max(x => x.Celsius);
-            return $"{Strings.SystemInfo_Temperature}: {highestTemperatureCelsius.ToLocalizedTemperatureText()}";
+            return $"{Strings.SystemInfo_Temperature}: {temperatureInfo.MaximumCelsius.ToLocalizedTemperatureText()}";
         }
 
-        internal static List<string> GenerateIndicator(this List<TemperatureInfo> temperatureInfoList)
+        internal static List<string> GenerateIndicator(this TemperatureInfo temperatureInfo)
         {
-            var resultLines = new List<string>
-            {
-                TreeFormatter.CreateRoot($"{Strings.SystemInfo_ThermalZone}:")
-            };
-
-            for (int i = 0; i < temperatureInfoList.Count; i++)
-            {
-                var temperatureInfo = temperatureInfoList[i];
-                var isLastItem = (i == temperatureInfoList.Count - 1);
-                resultLines.Add(TreeFormatter.CreateNode($"{temperatureInfo.Name}: {temperatureInfo.Celsius.ToLocalizedTemperatureText()}", isLastItem));
-            }
-
-            return resultLines;
+            return [
+                TreeFormatter.CreateRoot($"{Strings.SystemInfo_Temperature}:"),
+                TreeFormatter.CreateNode($"{Strings.SystemInfo_Average}: {temperatureInfo.AverageCelsius.ToLocalizedTemperatureText()}", false),
+                TreeFormatter.CreateNode($"{Strings.SystemInfo_Maximum}: {temperatureInfo.MaximumCelsius.ToLocalizedTemperatureText()}", true)
+            ];
         }
 
         private static string ToLocalizedTemperatureText(this float temperatureCelsius)
@@ -76,8 +65,10 @@ namespace RunCat365
 
     internal class TemperatureRepository
     {
+        private const float MIN_VALID_TEMPERATURE_CELSIUS = 0.0f;
+        private const float MAX_VALID_TEMPERATURE_CELSIUS = 150.0f;
         private readonly List<PerformanceCounter> temperatureCounters = [];
-        private readonly List<TemperatureInfo> temperatureInfoList = [];
+        private TemperatureInfo? temperatureInfo;
 
         internal bool IsAvailable { get; private set; } = true;
 
@@ -114,17 +105,23 @@ namespace RunCat365
             if (!IsAvailable || temperatureCounters.Count == 0) return;
             try
             {
-                temperatureInfoList.Clear();
+                var temperaturesCelsius = new List<float>();
                 foreach (var counter in temperatureCounters)
                 {
                     var temperatureKelvin = counter.NextValue();
                     if (temperatureKelvin <= 0) continue;
-                    temperatureInfoList.Add(new TemperatureInfo
-                    {
-                        Name = counter.InstanceName,
-                        Celsius = temperatureKelvin - 273.15f
-                    });
+                    var temperatureCelsius = temperatureKelvin - 273.15f;
+                    if (temperatureCelsius is < MIN_VALID_TEMPERATURE_CELSIUS or > MAX_VALID_TEMPERATURE_CELSIUS) continue;
+                    temperaturesCelsius.Add(temperatureCelsius);
                 }
+
+                temperatureInfo = temperaturesCelsius.Count == 0
+                    ? null
+                    : new TemperatureInfo
+                    {
+                        AverageCelsius = temperaturesCelsius.Average(),
+                        MaximumCelsius = temperaturesCelsius.Max()
+                    };
             }
             catch
             {
@@ -132,10 +129,10 @@ namespace RunCat365
             }
         }
 
-        internal List<TemperatureInfo> Get()
+        internal TemperatureInfo? Get()
         {
-            if (!IsAvailable || temperatureInfoList.Count == 0) return [];
-            return [.. temperatureInfoList];
+            if (!IsAvailable || !temperatureInfo.HasValue) return null;
+            return temperatureInfo.Value;
         }
 
         internal void Close()
