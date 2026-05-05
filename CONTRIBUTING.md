@@ -160,6 +160,15 @@ To suggest a new feature:
 * Maintainers may request changes before merging.
 * Inactive or non-responsive pull requests may be closed.
 
+### Responding to Review Comments
+
+* **Do not click `Resolve conversation` unless you are the reviewer.**
+  Even after pushing a fix in response to a review comment, only the reviewer can decide whether the issue is actually resolved.
+  Pushing a follow-up commit and resolving the conversation yourself bypasses that judgment.
+* **Address each review comment individually rather than bundling them together**, unless there is a clear reason to combine them.
+  The larger a single response or diff becomes, the harder it is for the reviewer to evaluate whether each point has been handled correctly.
+  Reply to each comment with the corresponding change so that the discussion stays focused and easy to follow.
+
 ---
 
 ## Thank You
