@@ -237,7 +237,7 @@ namespace RunCat365
             };
 
             var temperatureDescription = temperatureInfo?.GetDescription() ?? "";
-            return string.IsNullOrEmpty(temperatureDescription) ? baseDescription : $"{baseDescription} | {temperatureDescription}";
+            return string.IsNullOrEmpty(temperatureDescription) ? baseDescription : $"{baseDescription}\n{temperatureDescription}";
         }
 
         private int CalculateInterval(CPUInfo cpuInfo, GPUInfo? gpuInfo, MemoryInfo memoryInfo)
