@@ -31,6 +31,7 @@ This document describes the rules, steps, and expectations for contributing to t
   - [Submitting a Pull Request](#submitting-a-pull-request)
 - [Code Style Guidelines](#code-style-guidelines)
 - [Review Process](#review-process)
+   - [Community Reviews](#community-reviews)
    - [Responding to Review Comments](#responding-to-review-comments)
 - [Thank You](#thank-you)
 
@@ -160,6 +161,13 @@ To suggest a new feature:
 * Not all contributions are guaranteed to be accepted.
 * Maintainers may request changes before merging.
 * Inactive or non-responsive pull requests may be closed.
+
+### Community Reviews
+
+* Reviews and comments from non-maintainer community members are welcome and appreciated.
+* However, **only feedback from maintainers is considered official**, and only maintainers decide whether a pull request is merged.
+* Community reviewers may not be fully familiar with this project's contribution guidelines, so their suggestions may not always align with project policy.
+* Contributors are free to consider community feedback, but should use their own judgment and wait for maintainer review before treating any change as required.
 
 ### Responding to Review Comments
 
