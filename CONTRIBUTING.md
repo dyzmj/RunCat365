@@ -31,6 +31,7 @@ This document describes the rules, steps, and expectations for contributing to t
   - [Submitting a Pull Request](#submitting-a-pull-request)
 - [Code Style Guidelines](#code-style-guidelines)
 - [Review Process](#review-process)
+   - [Responding to Review Comments](#responding-to-review-comments)
 - [Thank You](#thank-you)
 
 ---
