@@ -228,7 +228,7 @@ namespace RunCat365
 
         private string GetInfoDescription(CPUInfo cpuInfo, GPUInfo? gpuInfo, MemoryInfo memoryInfo, TemperatureInfo? temperatureInfo)
         {
-            var baseDesc = speedSource switch
+            var baseDescription = speedSource switch
             {
                 SpeedSource.CPU => cpuInfo.GetDescription(),
                 SpeedSource.GPU => gpuInfo?.GetDescription() ?? "",
