@@ -26,6 +26,8 @@ namespace RunCat365
 
     internal static class TemperatureInfoExtension
     {
+        private static readonly bool usesFahrenheit = UsesFahrenheit();
+
         internal static string GetDescription(this TemperatureInfo temperatureInfo)
         {
             return $"{Strings.SystemInfo_Temperature}: {temperatureInfo.MaximumCelsius.ToLocalizedTemperatureText()}";
@@ -42,7 +44,6 @@ namespace RunCat365
 
         private static string ToLocalizedTemperatureText(this float temperatureCelsius)
         {
-            var usesFahrenheit = UsesFahrenheit();
             var value = usesFahrenheit ? temperatureCelsius * 9.0f / 5.0f + 32.0f : temperatureCelsius;
             var format = usesFahrenheit
                 ? Strings.SystemInfo_TemperatureFahrenheitFormat
