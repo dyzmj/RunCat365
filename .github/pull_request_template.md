@@ -20,6 +20,7 @@
 
 ## Checklist
 
+- [ ] I have read the [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md) and agree to follow it.
 - [ ] This PR does not contain commits of multiple contexts.
 - [ ] Code follows proper indentation and naming conventions.
 - [ ] Implemented using only APIs that can be submitted to the Microsoft Store.

@@ -396,6 +396,24 @@ namespace RunCat365.Properties {
             }
         }
 
+        internal static string SystemInfo_Temperature {
+            get {
+                return ResourceManager.GetString("SystemInfo_Temperature", resourceCulture);
+            }
+        }
+
+        internal static string SystemInfo_TemperatureCelsiusFormat {
+            get {
+                return ResourceManager.GetString("SystemInfo_TemperatureCelsiusFormat", resourceCulture);
+            }
+        }
+
+        internal static string SystemInfo_TemperatureFahrenheitFormat {
+            get {
+                return ResourceManager.GetString("SystemInfo_TemperatureFahrenheitFormat", resourceCulture);
+            }
+        }
+
         internal static string Menu_CustomRunners {
             get {
                 return ResourceManager.GetString("Menu_CustomRunners", resourceCulture);
