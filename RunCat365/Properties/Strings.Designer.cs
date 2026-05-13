@@ -450,6 +450,24 @@ namespace RunCat365.Properties {
             }
         }
 
+        internal static string CustomRunner_RemoveFrame {
+            get {
+                return ResourceManager.GetString("CustomRunner_RemoveFrame", resourceCulture);
+            }
+        }
+
+        internal static string CustomRunner_MoveFrameUp {
+            get {
+                return ResourceManager.GetString("CustomRunner_MoveFrameUp", resourceCulture);
+            }
+        }
+
+        internal static string CustomRunner_MoveFrameDown {
+            get {
+                return ResourceManager.GetString("CustomRunner_MoveFrameDown", resourceCulture);
+            }
+        }
+
         internal static string CustomRunner_Save {
             get {
                 return ResourceManager.GetString("CustomRunner_Save", resourceCulture);
@@ -459,12 +477,6 @@ namespace RunCat365.Properties {
         internal static string CustomRunner_Delete {
             get {
                 return ResourceManager.GetString("CustomRunner_Delete", resourceCulture);
-            }
-        }
-
-        internal static string CustomRunner_Use {
-            get {
-                return ResourceManager.GetString("CustomRunner_Use", resourceCulture);
             }
         }
 

@@ -7,16 +7,17 @@ namespace RunCat365
     internal class CustomRunnerForm : Form
     {
         private readonly CustomRunnerRepository repository;
-        private readonly Action<string> applyCustomRunner;
         private readonly Action revertToBuiltInRunner;
         private readonly ListBox runnerListBox;
         private readonly TextBox nameTextBox;
         private readonly Label nameWarningLabel;
         private readonly FlowLayoutPanel framePanel;
         private readonly Button addFramesButton;
+        private readonly Button removeFrameButton;
+        private readonly Button moveFrameUpButton;
+        private readonly Button moveFrameDownButton;
         private readonly Button saveButton;
         private readonly Button deleteButton;
-        private readonly Button useButton;
         private readonly PictureBox previewPictureBox;
         private readonly TrackBar speedSlider;
         private readonly FormsTimer previewTimer;
@@ -24,15 +25,14 @@ namespace RunCat365
         private readonly List<Bitmap> pendingFrames = [];
         private readonly List<Bitmap> recoloredFrames = []; // For accessibility and preview
         private int currentPreviewFrame = 0;
+        private int selectedFrameIndex = -1;
 
         internal CustomRunnerForm(
             CustomRunnerRepository repository,
-            Action<string> applyCustomRunner,
             Action revertToBuiltInRunner
         )
         {
             this.repository = repository;
-            this.applyCustomRunner = applyCustomRunner;
             this.revertToBuiltInRunner = revertToBuiltInRunner;
 
             Text = Strings.Window_CustomRunners;
@@ -108,7 +108,7 @@ namespace RunCat365
                 Font = new Font("Segoe UI", 7.5F)
             };
 
-            addFramesButton = new Button
+            addFramesButton = new ThemedButton
             {
                 Text = Strings.CustomRunner_AddFrames,
                 Location = new Point(184, 64),
@@ -122,7 +122,7 @@ namespace RunCat365
             addFramesButton.FlatAppearance.BorderColor = Color.FromArgb(100, 100, 100);
             addFramesButton.Click += AddFramesButtonClick;
 
-            var clearFramesButton = new Button
+            var clearFramesButton = new ThemedButton
             {
                 Text = Strings.CustomRunner_ClearFrames,
                 Location = new Point(304, 64),
@@ -135,6 +135,51 @@ namespace RunCat365
             };
             clearFramesButton.FlatAppearance.BorderColor = Color.FromArgb(100, 100, 100);
             clearFramesButton.Click += ClearFramesButtonClick;
+
+            removeFrameButton = new ThemedButton
+            {
+                Text = Strings.CustomRunner_RemoveFrame,
+                Location = new Point(404, 64),
+                Size = new Size(95, 28),
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.FromArgb(70, 70, 70),
+                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 8.5F),
+                Cursor = Cursors.Hand,
+                Enabled = false
+            };
+            removeFrameButton.FlatAppearance.BorderColor = Color.FromArgb(100, 100, 100);
+            removeFrameButton.Click += RemoveFrameButtonClick;
+
+            moveFrameUpButton = new ThemedButton
+            {
+                Text = Strings.CustomRunner_MoveFrameUp,
+                Location = new Point(509, 64),
+                Size = new Size(55, 28),
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.FromArgb(70, 70, 70),
+                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 8.5F),
+                Cursor = Cursors.Hand,
+                Enabled = false
+            };
+            moveFrameUpButton.FlatAppearance.BorderColor = Color.FromArgb(100, 100, 100);
+            moveFrameUpButton.Click += MoveFrameUpButtonClick;
+
+            moveFrameDownButton = new ThemedButton
+            {
+                Text = Strings.CustomRunner_MoveFrameDown,
+                Location = new Point(574, 64),
+                Size = new Size(65, 28),
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.FromArgb(70, 70, 70),
+                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 8.5F),
+                Cursor = Cursors.Hand,
+                Enabled = false
+            };
+            moveFrameDownButton.FlatAppearance.BorderColor = Color.FromArgb(100, 100, 100);
+            moveFrameDownButton.Click += MoveFrameDownButtonClick;
 
             framePanel = new FlowLayoutPanel
             {
@@ -165,6 +210,9 @@ namespace RunCat365
                 SizeMode = PictureBoxSizeMode.CenterImage
             };
 
+            previewTimer = new FormsTimer { Interval = 100 };
+            previewTimer.Tick += PreviewTimerTick;
+
             var speedLabel = new Label
             {
                 Text = "Preview Speed:",
@@ -190,7 +238,7 @@ namespace RunCat365
                 }
             };
 
-            deleteButton = new Button
+            deleteButton = new ThemedButton
             {
                 Text = Strings.CustomRunner_Delete,
                 Location = new Point(12, 438), // 480 - 12 - 30
@@ -205,22 +253,7 @@ namespace RunCat365
             deleteButton.FlatAppearance.BorderColor = Color.FromArgb(150, 60, 60);
             deleteButton.Click += DeleteButtonClick;
 
-            useButton = new Button
-            {
-                Text = Strings.CustomRunner_Use,
-                Location = new Point(97, 438),
-                Size = new Size(75, 30),
-                FlatStyle = FlatStyle.Flat,
-                BackColor = Color.FromArgb(40, 100, 60),
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 8.5F),
-                Cursor = Cursors.Hand,
-                Enabled = false
-            };
-            useButton.FlatAppearance.BorderColor = Color.FromArgb(60, 130, 80);
-            useButton.Click += UseButtonClick;
-
-            saveButton = new Button
+            saveButton = new ThemedButton
             {
                 Text = Strings.CustomRunner_Save,
                 Location = new Point(603, 438), // 700 - 12 - 85
@@ -244,18 +277,17 @@ namespace RunCat365
                 requirementsLabel,
                 addFramesButton,
                 clearFramesButton,
+                removeFrameButton,
+                moveFrameUpButton,
+                moveFrameDownButton,
                 framePanel,
                 previewLabel,
                 previewPictureBox,
                 speedLabel,
                 speedSlider,
                 deleteButton,
-                useButton,
                 saveButton
             ]);
-
-            previewTimer = new FormsTimer { Interval = 100 };
-            previewTimer.Tick += PreviewTimerTick;
 
             RefreshRunnerList();
             ValidateFormState();
@@ -275,13 +307,13 @@ namespace RunCat365
             {
                 runnerListBox.Items.Add(profile.Name);
             }
+            UpdateRunnerActionButtons();
         }
 
         private void RunnerListBoxSelectedIndexChanged(object? sender, EventArgs e)
         {
             var hasSelection = runnerListBox.SelectedIndex >= 0;
-            deleteButton.Enabled = hasSelection;
-            useButton.Enabled = hasSelection;
+            UpdateRunnerActionButtons();
 
             if (hasSelection && runnerListBox.SelectedItem is string selectedName)
             {
@@ -289,6 +321,7 @@ namespace RunCat365
                 ClearPendingFrames();
                 var frames = repository.LoadFrames(selectedName);
                 pendingFrames.AddRange(frames);
+                selectedFrameIndex = pendingFrames.Count > 0 ? 0 : -1;
                 RefreshFramePanel();
             }
         }
@@ -323,6 +356,38 @@ namespace RunCat365
             RefreshFramePanel();
         }
 
+        private void RemoveFrameButtonClick(object? sender, EventArgs e)
+        {
+            if (selectedFrameIndex < 0 || pendingFrames.Count <= selectedFrameIndex) return;
+
+            pendingFrames[selectedFrameIndex].Dispose();
+            pendingFrames.RemoveAt(selectedFrameIndex);
+            selectedFrameIndex = pendingFrames.Count == 0
+                ? -1
+                : Math.Min(selectedFrameIndex, pendingFrames.Count - 1);
+            RefreshFramePanel();
+        }
+
+        private void MoveFrameUpButtonClick(object? sender, EventArgs e)
+        {
+            if (selectedFrameIndex <= 0 || pendingFrames.Count <= selectedFrameIndex) return;
+
+            (pendingFrames[selectedFrameIndex - 1], pendingFrames[selectedFrameIndex]) =
+                (pendingFrames[selectedFrameIndex], pendingFrames[selectedFrameIndex - 1]);
+            selectedFrameIndex -= 1;
+            RefreshFramePanel();
+        }
+
+        private void MoveFrameDownButtonClick(object? sender, EventArgs e)
+        {
+            if (selectedFrameIndex < 0 || pendingFrames.Count - 1 <= selectedFrameIndex) return;
+
+            (pendingFrames[selectedFrameIndex], pendingFrames[selectedFrameIndex + 1]) =
+                (pendingFrames[selectedFrameIndex + 1], pendingFrames[selectedFrameIndex]);
+            selectedFrameIndex += 1;
+            RefreshFramePanel();
+        }
+
         private void RefreshFramePanel()
         {
             framePanel.SuspendLayout();
@@ -330,6 +395,10 @@ namespace RunCat365
             previewTimer.Stop();
             currentPreviewFrame = 0;
             previewPictureBox.Image = null;
+            if (pendingFrames.Count <= selectedFrameIndex)
+            {
+                selectedFrameIndex = pendingFrames.Count - 1;
+            }
 
             // Problem 4: Recolor internal silhouettes so they don't blend into dark mode backgrounds
             foreach (var frame in recoloredFrames)
@@ -347,8 +416,14 @@ namespace RunCat365
                 var container = new Panel
                 {
                     Size = new Size(70, 76),
-                    Margin = new Padding(4)
+                    Margin = new Padding(4),
+                    BackColor = i == selectedFrameIndex
+                        ? Color.FromArgb(75, 95, 125)
+                        : Color.Transparent
                 };
+
+                var frameIndex = i;
+                container.Click += (sender, e) => SelectFrame(frameIndex);
 
                 var pictureBox = new PictureBox
                 {
@@ -358,6 +433,7 @@ namespace RunCat365
                     Image = recolored,
                     BackColor = Color.FromArgb(40, 40, 40)
                 };
+                pictureBox.Click += (sender, e) => SelectFrame(frameIndex);
 
                 var indexLabel = new Label
                 {
@@ -368,6 +444,7 @@ namespace RunCat365
                     ForeColor = Color.FromArgb(170, 170, 170),
                     Font = new Font("Segoe UI", 7.5F)
                 };
+                indexLabel.Click += (sender, e) => SelectFrame(frameIndex);
 
                 container.Controls.Add(pictureBox);
                 container.Controls.Add(indexLabel);
@@ -381,10 +458,18 @@ namespace RunCat365
                 previewPictureBox.Image = recoloredFrames[0];
                 if (recoloredFrames.Count > 1)
                 {
+                    previewTimer.Interval = Math.Max(20, 500 / speedSlider.Value);
                     previewTimer.Start();
                 }
             }
             ValidateFormState();
+        }
+
+        private void SelectFrame(int frameIndex)
+        {
+            if (frameIndex < 0 || pendingFrames.Count <= frameIndex) return;
+            selectedFrameIndex = frameIndex;
+            RefreshFramePanel();
         }
 
         private void PreviewTimerTick(object? sender, EventArgs e)
@@ -392,6 +477,7 @@ namespace RunCat365
             if (recoloredFrames.Count < 2) return;
             currentPreviewFrame = (currentPreviewFrame + 1) % recoloredFrames.Count;
             previewPictureBox.Image = recoloredFrames[currentPreviewFrame];
+            previewPictureBox.Invalidate();
         }
 
         // Problem 2: Real-time UI validation explicitly preventing bad inputs immediately
@@ -400,10 +486,24 @@ namespace RunCat365
             var name = nameTextBox.Text.Trim();
             bool hasValidName = !string.IsNullOrWhiteSpace(name);
             bool hasValidFrames = pendingFrames.Count >= 2;
-            
+
             saveButton.Enabled = hasValidName && hasValidFrames;
-            
+
             nameWarningLabel.Visible = hasValidName && repository.Exists(name);
+            UpdateFrameActionButtons();
+        }
+
+        private void UpdateFrameActionButtons()
+        {
+            var hasSelectedFrame = 0 <= selectedFrameIndex && selectedFrameIndex < pendingFrames.Count;
+            removeFrameButton.Enabled = hasSelectedFrame;
+            moveFrameUpButton.Enabled = hasSelectedFrame && selectedFrameIndex > 0;
+            moveFrameDownButton.Enabled = hasSelectedFrame && selectedFrameIndex < pendingFrames.Count - 1;
+        }
+
+        private void UpdateRunnerActionButtons()
+        {
+            deleteButton.Enabled = runnerListBox.SelectedIndex >= 0;
         }
 
         private void SaveButtonClick(object? sender, EventArgs e)
@@ -457,22 +557,59 @@ namespace RunCat365
             RefreshFramePanel();
             nameTextBox.Clear();
             RefreshRunnerList();
-        }
-
-        private void UseButtonClick(object? sender, EventArgs e)
-        {
-            if (runnerListBox.SelectedItem is not string selectedName) return;
-            applyCustomRunner(selectedName);
+            UpdateRunnerActionButtons();
         }
 
         private void ClearPendingFrames()
         {
+            previewTimer.Stop();
+            previewPictureBox.Image = null;
             foreach (var frame in pendingFrames)
             {
                 frame.Dispose();
             }
             pendingFrames.Clear();
-            // We don't dispose recoloredFrames here, it's done during RefreshFramePanel
+            foreach (var frame in recoloredFrames)
+            {
+                frame.Dispose();
+            }
+            recoloredFrames.Clear();
+            selectedFrameIndex = -1;
+            UpdateFrameActionButtons();
+        }
+
+        private sealed class ThemedButton : Button
+        {
+            private static readonly Color DisabledBackColor = Color.FromArgb(58, 58, 58);
+            private static readonly Color DisabledForeColor = Color.FromArgb(145, 145, 145);
+            private static readonly Color DisabledBorderColor = Color.FromArgb(82, 82, 82);
+
+            protected override void OnEnabledChanged(EventArgs e)
+            {
+                base.OnEnabledChanged(e);
+                Cursor = Enabled ? Cursors.Hand : Cursors.Default;
+                Invalidate();
+            }
+
+            protected override void OnPaint(PaintEventArgs e)
+            {
+                var backColor = Enabled ? BackColor : DisabledBackColor;
+                var foreColor = Enabled ? ForeColor : DisabledForeColor;
+                var borderColor = Enabled ? FlatAppearance.BorderColor : DisabledBorderColor;
+
+                using var backBrush = new SolidBrush(backColor);
+                using var borderPen = new Pen(borderColor);
+                e.Graphics.FillRectangle(backBrush, ClientRectangle);
+                e.Graphics.DrawRectangle(borderPen, 0, 0, Width - 1, Height - 1);
+                TextRenderer.DrawText(
+                    e.Graphics,
+                    Text,
+                    Font,
+                    ClientRectangle,
+                    foreColor,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis
+                );
+            }
         }
     }
 }

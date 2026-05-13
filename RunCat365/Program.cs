@@ -113,6 +113,7 @@ namespace RunCat365
                 () => OpenRepository(),
                 () => Application.Exit(),
                 customRunnerRepository,
+                () => customRunnerName,
                 name => ApplyCustomRunner(name),
                 () => RevertToBuiltInRunner()
             );

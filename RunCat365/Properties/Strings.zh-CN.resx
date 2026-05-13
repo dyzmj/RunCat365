@@ -244,10 +244,10 @@
     <value>{0:f1}°F</value>
   </data>
   <data name="Menu_CustomRunners" xml:space="preserve">
-    <value>自制跑步者...</value>
+    <value>自定义跑步者...</value>
   </data>
   <data name="Window_CustomRunners" xml:space="preserve">
-    <value>自制跑步者</value>
+    <value>自定义跑步者</value>
   </data>
   <data name="CustomRunner_AddedRunners" xml:space="preserve">
     <value>已添加的跑步者:</value>
@@ -261,14 +261,20 @@
   <data name="CustomRunner_ClearFrames" xml:space="preserve">
     <value>清除</value>
   </data>
+  <data name="CustomRunner_RemoveFrame" xml:space="preserve">
+    <value>删除帧</value>
+  </data>
+  <data name="CustomRunner_MoveFrameUp" xml:space="preserve">
+    <value>上移</value>
+  </data>
+  <data name="CustomRunner_MoveFrameDown" xml:space="preserve">
+    <value>下移</value>
+  </data>
   <data name="CustomRunner_Save" xml:space="preserve">
     <value>保存</value>
   </data>
   <data name="CustomRunner_Delete" xml:space="preserve">
     <value>删除</value>
-  </data>
-  <data name="CustomRunner_Use" xml:space="preserve">
-    <value>使用</value>
   </data>
   <data name="CustomRunner_Requirements" xml:space="preserve">
     <value>格式: PNG | 最大尺寸: 32x32px</value>

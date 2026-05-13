@@ -261,14 +261,20 @@
   <data name="CustomRunner_ClearFrames" xml:space="preserve">
     <value>Limpiar</value>
   </data>
+  <data name="CustomRunner_RemoveFrame" xml:space="preserve">
+    <value>Eliminar fotograma</value>
+  </data>
+  <data name="CustomRunner_MoveFrameUp" xml:space="preserve">
+    <value>Subir</value>
+  </data>
+  <data name="CustomRunner_MoveFrameDown" xml:space="preserve">
+    <value>Bajar</value>
+  </data>
   <data name="CustomRunner_Save" xml:space="preserve">
     <value>Guardar</value>
   </data>
   <data name="CustomRunner_Delete" xml:space="preserve">
     <value>Eliminar</value>
-  </data>
-  <data name="CustomRunner_Use" xml:space="preserve">
-    <value>Usar</value>
   </data>
   <data name="CustomRunner_Requirements" xml:space="preserve">
     <value>Formato: PNG | Dimensiones máx: 32x32px</value>

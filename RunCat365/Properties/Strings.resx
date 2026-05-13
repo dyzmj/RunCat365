@@ -244,13 +244,13 @@
     <value>{0:f1}°F</value>
   </data>
   <data name="Menu_CustomRunners" xml:space="preserve">
-    <value>Self-Made Runners...</value>
+    <value>Custom Runners...</value>
   </data>
   <data name="Window_CustomRunners" xml:space="preserve">
-    <value>Self-Made Runners</value>
+    <value>Custom Runners</value>
   </data>
   <data name="CustomRunner_AddedRunners" xml:space="preserve">
-    <value>Added Runners:</value>
+    <value>Custom Runners:</value>
   </data>
   <data name="CustomRunner_Name" xml:space="preserve">
     <value>Runner Name:</value>
@@ -261,14 +261,20 @@
   <data name="CustomRunner_ClearFrames" xml:space="preserve">
     <value>Clear</value>
   </data>
+  <data name="CustomRunner_RemoveFrame" xml:space="preserve">
+    <value>Remove Frame</value>
+  </data>
+  <data name="CustomRunner_MoveFrameUp" xml:space="preserve">
+    <value>Up</value>
+  </data>
+  <data name="CustomRunner_MoveFrameDown" xml:space="preserve">
+    <value>Down</value>
+  </data>
   <data name="CustomRunner_Save" xml:space="preserve">
     <value>Save</value>
   </data>
   <data name="CustomRunner_Delete" xml:space="preserve">
     <value>Delete</value>
-  </data>
-  <data name="CustomRunner_Use" xml:space="preserve">
-    <value>Use</value>
   </data>
   <data name="CustomRunner_Requirements" xml:space="preserve">
     <value>Format: PNG | Max Dimensions: 32x32px</value>

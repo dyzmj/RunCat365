@@ -43,6 +43,7 @@ namespace RunCat365
             Action openRepository,
             Action onExit,
             CustomRunnerRepository customRunnerRepository,
+            Func<string?> getCustomRunnerName,
             Action<string> applyCustomRunner,
             Action revertToBuiltInRunner
         )
@@ -63,8 +64,15 @@ namespace RunCat365
                     );
                     SetIcons(getSystemTheme(), getManualTheme(), getRunner());
                 },
-                r => getRunner() == r,
+                r => getCustomRunnerName() is null && getRunner() == r,
                 r => GetRunnerThumbnailBitmap(getSystemTheme(), r)
+            );
+            runnersMenu.DropDownOpening += (sender, e) => RefreshCustomRunnerMenu(
+                runnersMenu,
+                customRunnerRepository,
+                getRunner,
+                getCustomRunnerName,
+                applyCustomRunner
             );
 
             var themeMenu = new CustomToolStripMenuItem(Strings.Menu_Theme);
@@ -133,7 +141,7 @@ namespace RunCat365
 
             var customRunnersMenu = new CustomToolStripMenuItem(Strings.Menu_CustomRunners);
             customRunnersMenu.Click += (sender, e) => ShowOrActivateCustomRunnerWindow(
-                customRunnerRepository, applyCustomRunner, revertToBuiltInRunner
+                customRunnerRepository, revertToBuiltInRunner
             );
 
             var endlessGameMenu = new CustomToolStripMenuItem(Strings.Menu_EndlessGame);
@@ -211,6 +219,49 @@ namespace RunCat365
             var obj = Resources.ResourceManager.GetObject(iconName);
             if (obj is not Bitmap bitmap) return null;
             return systemTheme == Theme.Light ? bitmap : bitmap.Recolor(color);
+        }
+
+        private static void RefreshCustomRunnerMenu(
+            CustomToolStripMenuItem runnersMenu,
+            CustomRunnerRepository customRunnerRepository,
+            Func<Runner> getRunner,
+            Func<string?> getCustomRunnerName,
+            Action<string> applyCustomRunner
+        )
+        {
+            foreach (ToolStripItem item in runnersMenu.DropDownItems)
+            {
+                if (item is ToolStripMenuItem menuItem && item.Tag is Runner runner)
+                {
+                    menuItem.Checked = getCustomRunnerName() is null && getRunner() == runner;
+                }
+            }
+
+            var customItems = runnersMenu.DropDownItems
+                .Cast<ToolStripItem>()
+                .Where(item => item.Tag is CustomRunnerMenuTag)
+                .ToList();
+            foreach (var item in customItems)
+            {
+                runnersMenu.DropDownItems.Remove(item);
+                item.Dispose();
+            }
+
+            var profiles = customRunnerRepository.GetAll().OrderBy(p => p.Name).ToList();
+            if (profiles.Count == 0) return;
+
+            runnersMenu.DropDownItems.Add(new ToolStripSeparator { Tag = new CustomRunnerMenuTag("") });
+            foreach (var profile in profiles)
+            {
+                var name = profile.Name;
+                var item = new CustomToolStripMenuItem(name)
+                {
+                    Tag = new CustomRunnerMenuTag(name),
+                    Checked = string.Equals(getCustomRunnerName(), name, StringComparison.OrdinalIgnoreCase)
+                };
+                item.Click += (sender, e) => applyCustomRunner(name);
+                runnersMenu.DropDownItems.Add(item);
+            }
         }
 
         internal void SetIcons(Theme systemTheme, Theme manualTheme, Runner runner)
@@ -307,13 +358,12 @@ namespace RunCat365
 
         private void ShowOrActivateCustomRunnerWindow(
             CustomRunnerRepository repository,
-            Action<string> applyCustomRunner,
             Action revertToBuiltInRunner
         )
         {
             if (customRunnerForm is null)
             {
-                customRunnerForm = new CustomRunnerForm(repository, applyCustomRunner, revertToBuiltInRunner);
+                customRunnerForm = new CustomRunnerForm(repository, revertToBuiltInRunner);
                 customRunnerForm.FormClosed += (sender, e) =>
                 {
                     customRunnerForm = null;
@@ -385,5 +435,7 @@ namespace RunCat365
         }
 
         private delegate bool CustomTryParseDelegate<T>(string? value, out T result);
+
+        private sealed record CustomRunnerMenuTag(string Name);
     }
 }
