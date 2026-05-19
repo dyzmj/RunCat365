@@ -8,12 +8,12 @@
 > - We do not accept issues or pull requests in languages other than English.
 > - Issues that do not follow the Issue Template will be closed without question.
 
-[![Github issues](https://img.shields.io/github/issues/runcat-dev/RunCat365)](https://github.com/runcat-dev/RunCat365/issues)
-[![Github forks](https://img.shields.io/github/forks/runcat-dev/RunCat365)](https://github.com/runcat-dev/RunCat365/network/members)
-[![Github stars](https://img.shields.io/github/stars/runcat-dev/RunCat365)](https://github.com/runcat-dev/RunCat365/stargazers)
-[![Top language](https://img.shields.io/github/languages/top/runcat-dev/RunCat365)](https://github.com/runcat-dev/RunCat365/)
-[![Release](https://img.shields.io/github/v/release/runcat-dev/RunCat365)](https://github.com/runcat-dev/RunCat365/releases)
-[![Github license](https://img.shields.io/github/license/runcat-dev/RunCat365)](https://github.com/runcat-dev/RunCat365/)
+[![Issues](https://img.shields.io/github/issues/runcat-dev/RunCat365)](https://github.com/runcat-dev/RunCat365/issues)
+[![Forks](https://img.shields.io/github/forks/runcat-dev/RunCat365)](https://github.com/runcat-dev/RunCat365/network/members)
+[![Stars](https://img.shields.io/github/stars/runcat-dev/RunCat365)](https://github.com/runcat-dev/RunCat365/stargazers)
+[![Top Language](https://img.shields.io/github/languages/top/runcat-dev/RunCat365)](https://github.com/runcat-dev/RunCat365/)
+[![Releases](https://img.shields.io/github/v/release/runcat-dev/RunCat365)](https://github.com/runcat-dev/RunCat365/releases)
+[![License](https://img.shields.io/github/license/runcat-dev/RunCat365)](https://github.com/runcat-dev/RunCat365/)
 
 `C#` `Win32` `.NET 9.0` `Visual Studio` `RunCat`
 
