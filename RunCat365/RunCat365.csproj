@@ -13,8 +13,8 @@
     <Company>Studio Kyome</Company>
     <Description>A cute running cat animation on your taskbar.</Description>
     <Copyright>© 2022 Takuto Nakamura</Copyright>
-    <PackageProjectUrl>https://kyome22.github.io/RunCat365/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/Kyome22/RunCat365</RepositoryUrl>
+    <PackageProjectUrl>https://runcat-dev.github.io/RunCat365/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/runcat-dev/RunCat365</RepositoryUrl>
     <PackageTags>cpu;cat;taskbar</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>app_icon.png</PackageIcon>

@@ -37,7 +37,7 @@ body:
     attributes:
       label: "Check List"
       options:
-        - label: "I have read the [CONTRIBUTING.md](https://github.com/Kyome22/RunCat365/blob/main/CONTRIBUTING.md) and agree to follow it."
+        - label: "I have read the [CONTRIBUTING.md](https://github.com/runcat-dev/RunCat365/blob/main/CONTRIBUTING.md) and agree to follow it."
           required: true
         - label: "The proposed feature is beneficial to a wide range of users and not just a personal preference."
           required: true
