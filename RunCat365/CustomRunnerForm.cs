@@ -297,6 +297,20 @@ namespace RunCat365
             ClearPendingFrames();
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                previewTimer.Stop();
+                previewTimer.Dispose();
+                foreach (var frame in pendingFrames) frame.Dispose();
+                pendingFrames.Clear();
+                foreach (var frame in recoloredFrames) frame.Dispose();
+                recoloredFrames.Clear();
+            }
+            base.Dispose(disposing);
+        }
+
         private void RefreshRunnerList()
         {
             runnerListBox.Items.Clear();
