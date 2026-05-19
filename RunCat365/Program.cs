@@ -115,7 +115,7 @@ namespace RunCat365
                 customRunnerRepository,
                 () => customRunnerName,
                 name => ApplyCustomRunner(name),
-                () => RevertToBuiltInRunner()
+                deletedName => HandleCustomRunnerDeleted(deletedName)
             );
 
             if (customRunnerName is not null)
@@ -241,6 +241,12 @@ namespace RunCat365
             UserSettings.Default.CustomRunnerName = string.Empty;
             UserSettings.Default.Save();
             contextMenuManager.SetIcons(GetSystemTheme(), manualTheme, runner);
+        }
+
+        private void HandleCustomRunnerDeleted(string deletedName)
+        {
+            if (!string.Equals(customRunnerName, deletedName, StringComparison.OrdinalIgnoreCase)) return;
+            RevertToBuiltInRunner();
         }
 
         private void ChangeManualTheme(Theme t)

@@ -7,7 +7,7 @@ namespace RunCat365
     internal class CustomRunnerForm : Form
     {
         private readonly CustomRunnerRepository repository;
-        private readonly Action revertToBuiltInRunner;
+        private readonly Action<string> onCustomRunnerDeleted;
         private readonly ListBox runnerListBox;
         private readonly TextBox nameTextBox;
         private readonly Label nameWarningLabel;
@@ -29,11 +29,11 @@ namespace RunCat365
 
         internal CustomRunnerForm(
             CustomRunnerRepository repository,
-            Action revertToBuiltInRunner
+            Action<string> onCustomRunnerDeleted
         )
         {
             this.repository = repository;
-            this.revertToBuiltInRunner = revertToBuiltInRunner;
+            this.onCustomRunnerDeleted = onCustomRunnerDeleted;
 
             Text = Strings.Window_CustomRunners;
             Icon = Resources.AppIcon;
@@ -546,7 +546,7 @@ namespace RunCat365
             if (result != DialogResult.Yes) return;
 
             repository.Delete(selectedName);
-            revertToBuiltInRunner();
+            onCustomRunnerDeleted(selectedName);
             ClearPendingFrames();
             RefreshFramePanel();
             nameTextBox.Clear();

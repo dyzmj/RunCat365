@@ -45,7 +45,7 @@ namespace RunCat365
             CustomRunnerRepository customRunnerRepository,
             Func<string?> getCustomRunnerName,
             Action<string> applyCustomRunner,
-            Action revertToBuiltInRunner
+            Action<string> onCustomRunnerDeleted
         )
         {
             systemInfoMenu.Text = "-\n-\n-\n-\n-";
@@ -141,7 +141,7 @@ namespace RunCat365
 
             var customRunnersMenu = new CustomToolStripMenuItem(Strings.Menu_CustomRunners);
             customRunnersMenu.Click += (sender, e) => ShowOrActivateCustomRunnerWindow(
-                customRunnerRepository, revertToBuiltInRunner
+                customRunnerRepository, onCustomRunnerDeleted
             );
 
             var endlessGameMenu = new CustomToolStripMenuItem(Strings.Menu_EndlessGame);
@@ -358,12 +358,12 @@ namespace RunCat365
 
         private void ShowOrActivateCustomRunnerWindow(
             CustomRunnerRepository repository,
-            Action revertToBuiltInRunner
+            Action<string> onCustomRunnerDeleted
         )
         {
             if (customRunnerForm is null)
             {
-                customRunnerForm = new CustomRunnerForm(repository, revertToBuiltInRunner);
+                customRunnerForm = new CustomRunnerForm(repository, onCustomRunnerDeleted);
                 customRunnerForm.FormClosed += (sender, e) =>
                 {
                     customRunnerForm = null;
