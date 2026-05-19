@@ -291,4 +291,13 @@
   <data name="CustomRunner_ConfirmDelete" xml:space="preserve">
     <value>刪除跑步者「{0}」？</value>
   </data>
+  <data name="CustomRunner_OverwriteWarning" xml:space="preserve">
+    <value>⚠️ 同名跑步者已存在。儲存將覆蓋。</value>
+  </data>
+  <data name="CustomRunner_Preview" xml:space="preserve">
+    <value>預覽:</value>
+  </data>
+  <data name="CustomRunner_PreviewSpeed" xml:space="preserve">
+    <value>預覽速度:</value>
+  </data>
 </root>

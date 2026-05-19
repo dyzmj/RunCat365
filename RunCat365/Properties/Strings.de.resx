@@ -291,4 +291,13 @@
   <data name="CustomRunner_ConfirmDelete" xml:space="preserve">
     <value>Runner "{0}" löschen?</value>
   </data>
+  <data name="CustomRunner_OverwriteWarning" xml:space="preserve">
+    <value>⚠️ Profil existiert bereits. Speichern überschreibt es.</value>
+  </data>
+  <data name="CustomRunner_Preview" xml:space="preserve">
+    <value>Vorschau:</value>
+  </data>
+  <data name="CustomRunner_PreviewSpeed" xml:space="preserve">
+    <value>Vorschaugeschwindigkeit:</value>
+  </data>
 </root>

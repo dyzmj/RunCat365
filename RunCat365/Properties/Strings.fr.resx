@@ -291,4 +291,13 @@
   <data name="CustomRunner_ConfirmDelete" xml:space="preserve">
     <value>Supprimer le runner « {0} » ?</value>
   </data>
+  <data name="CustomRunner_OverwriteWarning" xml:space="preserve">
+    <value>⚠️ Le profil existe. L'enregistrement l'écrasera.</value>
+  </data>
+  <data name="CustomRunner_Preview" xml:space="preserve">
+    <value>Aperçu :</value>
+  </data>
+  <data name="CustomRunner_PreviewSpeed" xml:space="preserve">
+    <value>Vitesse d'aperçu :</value>
+  </data>
 </root>

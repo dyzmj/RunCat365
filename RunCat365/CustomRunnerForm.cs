@@ -88,7 +88,7 @@ namespace RunCat365
 
             nameWarningLabel = new Label
             {
-                Text = "⚠️ Profile exists. Saving will overwrite.",
+                Text = Strings.CustomRunner_OverwriteWarning,
                 Location = new Point(448, 40),
                 Size = new Size(240, 18),
                 ForeColor = Color.FromArgb(220, 160, 60),
@@ -191,7 +191,7 @@ namespace RunCat365
 
             var previewLabel = new Label
             {
-                Text = "Preview:",
+                Text = Strings.CustomRunner_Preview,
                 Location = new Point(546, 100),
                 Size = new Size(142, 18),
                 ForeColor = Color.FromArgb(200, 200, 200),
@@ -212,7 +212,7 @@ namespace RunCat365
 
             var speedLabel = new Label
             {
-                Text = "Preview Speed:",
+                Text = Strings.CustomRunner_PreviewSpeed,
                 Location = new Point(546, 276),
                 Size = new Size(142, 18),
                 ForeColor = Color.FromArgb(200, 200, 200),

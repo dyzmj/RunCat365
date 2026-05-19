@@ -509,5 +509,23 @@ namespace RunCat365.Properties {
                 return ResourceManager.GetString("CustomRunner_ConfirmDelete", resourceCulture);
             }
         }
+
+        internal static string CustomRunner_OverwriteWarning {
+            get {
+                return ResourceManager.GetString("CustomRunner_OverwriteWarning", resourceCulture);
+            }
+        }
+
+        internal static string CustomRunner_Preview {
+            get {
+                return ResourceManager.GetString("CustomRunner_Preview", resourceCulture);
+            }
+        }
+
+        internal static string CustomRunner_PreviewSpeed {
+            get {
+                return ResourceManager.GetString("CustomRunner_PreviewSpeed", resourceCulture);
+            }
+        }
     }
 }
