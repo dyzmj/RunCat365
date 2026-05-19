@@ -57,7 +57,7 @@ body:
     attributes:
       label: "Check List"
       options:
-        - label: "I have read the [CONTRIBUTING.md](https://github.com/Kyome22/RunCat365/blob/main/CONTRIBUTING.md) and agree to follow it."
+        - label: "I have read the [CONTRIBUTING.md](https://github.com/runcat-dev/RunCat365/blob/main/CONTRIBUTING.md) and agree to follow it."
           required: true
         - label: "Uninstalled App."
           required: true

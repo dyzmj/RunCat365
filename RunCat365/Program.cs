@@ -183,7 +183,7 @@ namespace RunCat365
             {
                 Process.Start(new ProcessStartInfo()
                 {
-                    FileName = "https://github.com/Kyome22/RunCat365.git",
+                    FileName = "https://github.com/runcat-dev/RunCat365.git",
                     UseShellExecute = true
                 });
             }
