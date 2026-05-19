@@ -289,6 +289,7 @@ namespace RunCat365
 
             lock (iconLock)
             {
+                foreach (var icon in icons) icon.Dispose();
                 icons.Clear();
                 icons.AddRange(list);
                 current = 0;
@@ -315,6 +316,7 @@ namespace RunCat365
 
             lock (iconLock)
             {
+                foreach (var icon in icons) icon.Dispose();
                 icons.Clear();
                 icons.AddRange(list);
                 current = 0;
@@ -420,6 +422,7 @@ namespace RunCat365
             {
                 lock (iconLock)
                 {
+                    foreach (var icon in icons) icon.Dispose();
                     icons.Clear();
                 }
 
