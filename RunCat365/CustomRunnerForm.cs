@@ -23,7 +23,7 @@ namespace RunCat365
         private readonly FormsTimer previewTimer;
 
         private readonly List<Bitmap> pendingFrames = [];
-        private readonly List<Bitmap> recoloredFrames = []; // For accessibility and preview
+        private readonly List<Bitmap> recoloredFrames = [];
         private int currentPreviewFrame = 0;
         private int selectedFrameIndex = -1;
 
@@ -44,8 +44,6 @@ namespace RunCat365
             BackColor = Color.FromArgb(45, 45, 45);
             ForeColor = Color.White;
 
-            // Problem 5: Perfect visual alignment mapping based on fixed ClientSize 700x480
-            // Margins: 12px padding around container edges
             var listLabel = new Label
             {
                 Text = Strings.CustomRunner_AddedRunners,
@@ -58,7 +56,7 @@ namespace RunCat365
             runnerListBox = new ListBox
             {
                 Location = new Point(12, 35),
-                Size = new Size(160, 391), // Clean margin to bottom buttons (480 - 12 - 30 - 12) = 426 -> 35 + 391 = 426
+                Size = new Size(160, 391),
                 BackColor = Color.FromArgb(60, 60, 60),
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 9F),
@@ -79,7 +77,7 @@ namespace RunCat365
             nameTextBox = new TextBox
             {
                 Location = new Point(284, 10),
-                Size = new Size(404, 24), // Extends up to 700 - 12 = 688
+                Size = new Size(404, 24),
                 BackColor = Color.FromArgb(60, 60, 60),
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 9F),
@@ -184,14 +182,13 @@ namespace RunCat365
             framePanel = new FlowLayoutPanel
             {
                 Location = new Point(184, 100),
-                Size = new Size(350, 326), // Bottom perfectly aligns with bottom of listbox (100+326 = 426)
+                Size = new Size(350, 326),
                 AutoScroll = true,
                 BackColor = Color.FromArgb(55, 55, 55),
                 BorderStyle = BorderStyle.FixedSingle,
                 WrapContents = true
             };
 
-            // Problem 3: Preview Panel Configuration
             var previewLabel = new Label
             {
                 Text = "Preview:",
@@ -241,7 +238,7 @@ namespace RunCat365
             deleteButton = new ThemedButton
             {
                 Text = Strings.CustomRunner_Delete,
-                Location = new Point(12, 438), // 480 - 12 - 30
+                Location = new Point(12, 438),
                 Size = new Size(75, 30),
                 FlatStyle = FlatStyle.Flat,
                 BackColor = Color.FromArgb(120, 40, 40),
@@ -256,14 +253,14 @@ namespace RunCat365
             saveButton = new ThemedButton
             {
                 Text = Strings.CustomRunner_Save,
-                Location = new Point(603, 438), // 700 - 12 - 85
+                Location = new Point(603, 438),
                 Size = new Size(85, 30),
                 FlatStyle = FlatStyle.Flat,
                 BackColor = Color.FromArgb(50, 90, 160),
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 9F, FontStyle.Bold),
                 Cursor = Cursors.Hand,
-                Enabled = false // Disabled by default for Problem 2 validation
+                Enabled = false
             };
             saveButton.FlatAppearance.BorderColor = Color.FromArgb(70, 120, 200);
             saveButton.Click += SaveButtonClick;
@@ -400,7 +397,6 @@ namespace RunCat365
                 selectedFrameIndex = pendingFrames.Count - 1;
             }
 
-            // Problem 4: Recolor internal silhouettes so they don't blend into dark mode backgrounds
             foreach (var frame in recoloredFrames)
             {
                 frame.Dispose();
@@ -409,7 +405,6 @@ namespace RunCat365
 
             for (int i = 0; i < pendingFrames.Count; i++)
             {
-                // Generate a white-silhouette contrast representation dynamically
                 var recolored = pendingFrames[i].Recolor(Color.White);
                 recoloredFrames.Add(recolored);
 
@@ -480,7 +475,6 @@ namespace RunCat365
             previewPictureBox.Invalidate();
         }
 
-        // Problem 2: Real-time UI validation explicitly preventing bad inputs immediately
         private void ValidateFormState()
         {
             var name = nameTextBox.Text.Trim();
