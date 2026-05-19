@@ -12,7 +12,7 @@
 [![Github forks](https://img.shields.io/github/forks/runcat-dev/RunCat365)](https://github.com/runcat-dev/RunCat365/network/members)
 [![Github stars](https://img.shields.io/github/stars/runcat-dev/RunCat365)](https://github.com/runcat-dev/RunCat365/stargazers)
 [![Top language](https://img.shields.io/github/languages/top/runcat-dev/RunCat365)](https://github.com/runcat-dev/RunCat365/)
-[![Release](https://img.shields.io/github/v/release/runcat-dev/RunCat365)]()
+[![Release](https://img.shields.io/github/v/release/runcat-dev/RunCat365)](https://github.com/runcat-dev/RunCat365/releases)
 [![Github license](https://img.shields.io/github/license/runcat-dev/RunCat365)](https://github.com/runcat-dev/RunCat365/)
 
 `C#` `Win32` `.NET 9.0` `Visual Studio` `RunCat`
