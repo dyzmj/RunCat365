@@ -101,6 +101,10 @@ namespace RunCat365
             contextMenuManager = new ContextMenuManager(
                 () => runner,
                 r => ChangeRunner(r),
+                customRunnerRepository,
+                () => customRunnerName,
+                name => ApplyCustomRunner(name),
+                deletedName => HandleCustomRunnerDeleted(deletedName),
                 () => GetSystemTheme(),
                 () => manualTheme,
                 t => ChangeManualTheme(t),
@@ -112,11 +116,7 @@ namespace RunCat365
                 () => launchAtStartupManager.GetStartup(),
                 s => launchAtStartupManager.SetStartup(s),
                 () => OpenProjectPage(),
-                () => Application.Exit(),
-                customRunnerRepository,
-                () => customRunnerName,
-                name => ApplyCustomRunner(name),
-                deletedName => HandleCustomRunnerDeleted(deletedName)
+                () => Application.Exit()
             );
 
             if (customRunnerName is not null)

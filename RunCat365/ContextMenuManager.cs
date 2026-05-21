@@ -31,6 +31,10 @@ namespace RunCat365
         internal ContextMenuManager(
             Func<Runner> getRunner,
             Action<Runner> setRunner,
+            CustomRunnerRepository customRunnerRepository,
+            Func<string?> getCustomRunnerName,
+            Action<string> applyCustomRunner,
+            Action<string> onCustomRunnerDeleted,
             Func<Theme> getSystemTheme,
             Func<Theme> getManualTheme,
             Action<Theme> setManualTheme,
@@ -42,11 +46,7 @@ namespace RunCat365
             Func<bool> getLaunchAtStartup,
             Func<bool, bool> toggleLaunchAtStartup,
             Action openProjectPage,
-            Action onExit,
-            CustomRunnerRepository customRunnerRepository,
-            Func<string?> getCustomRunnerName,
-            Action<string> applyCustomRunner,
-            Action<string> onCustomRunnerDeleted
+            Action onExit
         )
         {
             systemInfoMenu.Text = "-\n-\n-\n-\n-";
