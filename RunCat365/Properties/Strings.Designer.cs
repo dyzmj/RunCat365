@@ -130,11 +130,11 @@ namespace RunCat365.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Open Repository.
+        ///   Looks up a localized string similar to Open Project Page.
         /// </summary>
-        internal static string Menu_OpenRepository {
+        internal static string Menu_OpenProjectPage {
             get {
-                return ResourceManager.GetString("Menu_OpenRepository", resourceCulture);
+                return ResourceManager.GetString("Menu_OpenProjectPage", resourceCulture);
             }
         }
 

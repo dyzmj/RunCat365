@@ -41,7 +41,7 @@ namespace RunCat365
             Action<FPSMaxLimit> setFPSMaxLimit,
             Func<bool> getLaunchAtStartup,
             Func<bool, bool> toggleLaunchAtStartup,
-            Action openRepository,
+            Action openProjectPage,
             Action onExit,
             CustomRunnerRepository customRunnerRepository,
             Func<string?> getCustomRunnerName,
@@ -156,13 +156,13 @@ namespace RunCat365
                 Enabled = false
             };
 
-            var repositoryMenu = new CustomToolStripMenuItem(Strings.Menu_OpenRepository);
-            repositoryMenu.Click += (sender, e) => openRepository();
+            var projectPageMenu = new CustomToolStripMenuItem(Strings.Menu_OpenProjectPage);
+            projectPageMenu.Click += (sender, e) => openProjectPage();
 
             var informationMenu = new CustomToolStripMenuItem(Strings.Menu_Information);
             informationMenu.DropDownItems.AddRange(
                 appVersionMenu,
-                repositoryMenu
+                projectPageMenu
             );
 
             var exitMenu = new CustomToolStripMenuItem(Strings.Menu_Exit);

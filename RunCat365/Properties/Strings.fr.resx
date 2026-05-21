@@ -138,8 +138,8 @@
   <data name="Menu_Information" xml:space="preserve">
     <value>Informations</value>
   </data>
-  <data name="Menu_OpenRepository" xml:space="preserve">
-    <value>Ouvrir le dépôt</value>
+  <data name="Menu_OpenProjectPage" xml:space="preserve">
+    <value>Ouvrir la page du projet</value>
   </data>
   <data name="Menu_Exit" xml:space="preserve">
     <value>Quitter</value>

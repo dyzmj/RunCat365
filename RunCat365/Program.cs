@@ -110,7 +110,7 @@ namespace RunCat365
                 f => ChangeFPSMaxLimit(f),
                 () => launchAtStartupManager.GetStartup(),
                 s => launchAtStartupManager.SetStartup(s),
-                () => OpenRepository(),
+                () => OpenProjectPage(),
                 () => Application.Exit(),
                 customRunnerRepository,
                 () => customRunnerName,
@@ -197,7 +197,7 @@ namespace RunCat365
             }
         }
 
-        private static void OpenRepository()
+        private static void OpenProjectPage()
         {
             try
             {

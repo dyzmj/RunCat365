@@ -138,8 +138,8 @@
   <data name="Menu_Information" xml:space="preserve">
     <value>信息</value>
   </data>
-  <data name="Menu_OpenRepository" xml:space="preserve">
-    <value>打开存储库</value>
+  <data name="Menu_OpenProjectPage" xml:space="preserve">
+    <value>打开项目页面</value>
   </data>
   <data name="Menu_Exit" xml:space="preserve">
     <value>退出</value>
