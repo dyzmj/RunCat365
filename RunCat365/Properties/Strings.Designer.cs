@@ -468,18 +468,6 @@ namespace RunCat365.Properties {
             }
         }
 
-        internal static string CustomRunner_ErrorEmptyName {
-            get {
-                return ResourceManager.GetString("CustomRunner_ErrorEmptyName", resourceCulture);
-            }
-        }
-
-        internal static string CustomRunner_ErrorMinFrames {
-            get {
-                return ResourceManager.GetString("CustomRunner_ErrorMinFrames", resourceCulture);
-            }
-        }
-
         internal static string CustomRunner_ConfirmOverwrite {
             get {
                 return ResourceManager.GetString("CustomRunner_ConfirmOverwrite", resourceCulture);

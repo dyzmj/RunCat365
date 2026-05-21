@@ -270,12 +270,6 @@
   <data name="CustomRunner_Requirements" xml:space="preserve">
     <value>Format: PNG | Max Dimensions: 32x32px</value>
   </data>
-  <data name="CustomRunner_ErrorEmptyName" xml:space="preserve">
-    <value>Please enter a runner name.</value>
-  </data>
-  <data name="CustomRunner_ErrorMinFrames" xml:space="preserve">
-    <value>Please add at least 2 frames.</value>
-  </data>
   <data name="CustomRunner_ConfirmOverwrite" xml:space="preserve">
     <value>A runner with this name already exists. Overwrite?</value>
   </data>

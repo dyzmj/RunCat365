@@ -250,7 +250,7 @@
     <value>カスタムランナー</value>
   </data>
   <data name="CustomRunner_AddedRunners" xml:space="preserve">
-    <value>追加済みランナー:</value>
+    <value>カスタムランナー:</value>
   </data>
   <data name="CustomRunner_Name" xml:space="preserve">
     <value>ランナー名:</value>
@@ -269,12 +269,6 @@
   </data>
   <data name="CustomRunner_Requirements" xml:space="preserve">
     <value>形式: PNG | 最大サイズ: 32x32px</value>
-  </data>
-  <data name="CustomRunner_ErrorEmptyName" xml:space="preserve">
-    <value>ランナー名を入力してください。</value>
-  </data>
-  <data name="CustomRunner_ErrorMinFrames" xml:space="preserve">
-    <value>2フレーム以上追加してください。</value>
   </data>
   <data name="CustomRunner_ConfirmOverwrite" xml:space="preserve">
     <value>同名のランナーが既に存在します。上書きしますか？</value>

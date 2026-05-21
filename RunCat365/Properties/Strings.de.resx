@@ -244,13 +244,13 @@
     <value>{0:f1}°F</value>
   </data>
   <data name="Menu_CustomRunners" xml:space="preserve">
-    <value>Custom Runner...</value>
+    <value>Benutzerdefinierte Runner...</value>
   </data>
   <data name="Window_CustomRunners" xml:space="preserve">
-    <value>Custom Runner</value>
+    <value>Benutzerdefinierte Runner</value>
   </data>
   <data name="CustomRunner_AddedRunners" xml:space="preserve">
-    <value>Hinzugefügte Runner:</value>
+    <value>Benutzerdefinierte Runner:</value>
   </data>
   <data name="CustomRunner_Name" xml:space="preserve">
     <value>Runner-Name:</value>
@@ -269,12 +269,6 @@
   </data>
   <data name="CustomRunner_Requirements" xml:space="preserve">
     <value>Format: PNG | Max Abmessungen: 32x32px</value>
-  </data>
-  <data name="CustomRunner_ErrorEmptyName" xml:space="preserve">
-    <value>Bitte geben Sie einen Runner-Namen ein.</value>
-  </data>
-  <data name="CustomRunner_ErrorMinFrames" xml:space="preserve">
-    <value>Bitte fügen Sie mindestens 2 Frames hinzu.</value>
   </data>
   <data name="CustomRunner_ConfirmOverwrite" xml:space="preserve">
     <value>Ein Runner mit diesem Namen existiert bereits. Überschreiben?</value>

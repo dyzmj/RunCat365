@@ -250,7 +250,7 @@
     <value>自定义跑步者</value>
   </data>
   <data name="CustomRunner_AddedRunners" xml:space="preserve">
-    <value>已添加的跑步者:</value>
+    <value>自定义跑步者:</value>
   </data>
   <data name="CustomRunner_Name" xml:space="preserve">
     <value>跑步者名称:</value>
@@ -269,12 +269,6 @@
   </data>
   <data name="CustomRunner_Requirements" xml:space="preserve">
     <value>格式: PNG | 最大尺寸: 32x32px</value>
-  </data>
-  <data name="CustomRunner_ErrorEmptyName" xml:space="preserve">
-    <value>请输入跑步者名称。</value>
-  </data>
-  <data name="CustomRunner_ErrorMinFrames" xml:space="preserve">
-    <value>请至少添加2帧。</value>
   </data>
   <data name="CustomRunner_ConfirmOverwrite" xml:space="preserve">
     <value>同名跑步者已存在。是否覆盖？</value>

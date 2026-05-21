@@ -250,7 +250,7 @@
     <value>Runners personnalisés</value>
   </data>
   <data name="CustomRunner_AddedRunners" xml:space="preserve">
-    <value>Runners ajoutés :</value>
+    <value>Runners personnalisés :</value>
   </data>
   <data name="CustomRunner_Name" xml:space="preserve">
     <value>Nom du runner :</value>
@@ -269,12 +269,6 @@
   </data>
   <data name="CustomRunner_Requirements" xml:space="preserve">
     <value>Format : PNG | Dimensions max : 32x32px</value>
-  </data>
-  <data name="CustomRunner_ErrorEmptyName" xml:space="preserve">
-    <value>Veuillez entrer un nom de runner.</value>
-  </data>
-  <data name="CustomRunner_ErrorMinFrames" xml:space="preserve">
-    <value>Veuillez ajouter au moins 2 images.</value>
   </data>
   <data name="CustomRunner_ConfirmOverwrite" xml:space="preserve">
     <value>Un runner avec ce nom existe déjà. Écraser ?</value>
