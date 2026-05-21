@@ -148,6 +148,8 @@ namespace RunCat365
 
             var column = new TableLayoutPanel
             {
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
                 Dock = DockStyle.Fill,
                 ColumnCount = 1,
                 RowCount = 3,
