@@ -323,7 +323,10 @@ namespace RunCat365
                 systemInfoValues.AddRange(temperatureInfo.Value.GenerateIndicator());
             }
             systemInfoValues.AddRange(storageInfo.GenerateIndicator());
-            systemInfoValues.AddRange(networkInfo.GenerateIndicator());
+            if (networkInfo.HasValue)
+            {
+                systemInfoValues.AddRange(networkInfo.Value.GenerateIndicator());
+            }
             contextMenuManager.SetSystemInfoMenuText(string.Join("\n", [.. systemInfoValues]));
 
             return CalculateInterval(cpuInfo, gpuInfo, memoryInfo);
