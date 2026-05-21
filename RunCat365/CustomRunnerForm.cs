@@ -38,7 +38,7 @@ namespace RunCat365
         private Button saveButton = null!;
         private Button deleteButton = null!;
         private FrameAnimationView previewView = null!;
-        private TrackBar speedSlider = null!;
+        private FlatTrackBar speedSlider = null!;
 
         private readonly List<Bitmap> pendingFrames = [];
         private readonly List<Bitmap> recoloredFrames = [];
@@ -87,7 +87,7 @@ namespace RunCat365
             StartPosition = FormStartPosition.CenterScreen;
             BackColor = Palette.FormBackground;
             ForeColor = Palette.TextPrimary;
-            Padding = new Padding(12);
+            Padding = new Padding(20);
         }
 
         private void InitializeControls()
@@ -102,8 +102,7 @@ namespace RunCat365
                 AutoSizeMode = AutoSizeMode.GrowAndShrink,
                 ColumnCount = 3,
                 RowCount = 1,
-                BackColor = Color.Transparent,
-                Location = new Point(0, 0)
+                BackColor = Color.Transparent
             };
             root.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             root.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
@@ -114,6 +113,7 @@ namespace RunCat365
             root.Controls.Add(editorColumn, 2, 0);
 
             Controls.Add(root);
+            root.Location = new Point(Padding.Left, Padding.Top);
         }
 
         private TableLayoutPanel BuildListColumn()
@@ -126,13 +126,13 @@ namespace RunCat365
 
             runnerListBox = new ListBox
             {
-                MinimumSize = new Size(160, 360),
+                MinimumSize = new Size(160, 200),
                 BackColor = Palette.ControlBackground,
                 ForeColor = Palette.TextPrimary,
                 Font = new Font(fontFamily, 9F),
                 BorderStyle = BorderStyle.FixedSingle,
                 IntegralHeight = false,
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
+                Dock = DockStyle.Fill,
                 Margin = new Padding(0, 0, 0, 8)
             };
 
@@ -149,15 +149,14 @@ namespace RunCat365
 
             var column = new TableLayoutPanel
             {
-                AutoSize = true,
-                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Dock = DockStyle.Fill,
                 ColumnCount = 1,
                 RowCount = 3,
                 BackColor = Color.Transparent
             };
             column.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             column.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            column.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            column.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
             column.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             column.Controls.Add(listLabel, 0, 0);
             column.Controls.Add(runnerListBox, 0, 1);
@@ -196,8 +195,9 @@ namespace RunCat365
                 Strings.CustomRunner_Name,
                 9F, FontStyle.Regular, Palette.TextSecondary
             );
+            nameLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            nameLabel.TextAlign = ContentAlignment.MiddleRight;
             nameLabel.Margin = new Padding(0, 6, 12, 8);
-            nameLabel.TextAlign = ContentAlignment.MiddleLeft;
 
             nameTextBox = new TextBox
             {
@@ -215,6 +215,8 @@ namespace RunCat365
                 Strings.CustomRunner_RequirementsLabel,
                 9F, FontStyle.Regular, Palette.TextSecondary
             );
+            requirementsCaption.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            requirementsCaption.TextAlign = ContentAlignment.MiddleRight;
             requirementsCaption.Margin = new Padding(0, 0, 12, 8);
 
             var requirementsContent = CreateLabel(
@@ -227,7 +229,8 @@ namespace RunCat365
                 Strings.CustomRunner_FramesLabel,
                 9F, FontStyle.Regular, Palette.TextSecondary
             );
-            framesCaption.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            framesCaption.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            framesCaption.TextAlign = ContentAlignment.MiddleRight;
             framesCaption.Margin = new Padding(0, 0, 12, 8);
 
             var framesArea = BuildFramesArea();
@@ -238,7 +241,8 @@ namespace RunCat365
                 Strings.CustomRunner_Preview,
                 9F, FontStyle.Regular, Palette.TextSecondary
             );
-            previewCaption.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            previewCaption.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            previewCaption.TextAlign = ContentAlignment.MiddleRight;
             previewCaption.Margin = new Padding(0, 0, 12, 8);
 
             var previewArea = BuildPreviewArea();
@@ -348,38 +352,61 @@ namespace RunCat365
         {
             previewView = new FrameAnimationView
             {
-                Size = new Size(142, 142),
+                Size = new Size(64, 64),
                 BackColor = Palette.FramePanelBackground,
                 FrameIntervalMs = PREVIEW_INITIAL_INTERVAL_MS,
+                Anchor = AnchorStyles.None,
                 Margin = new Padding(0, 0, 12, 0)
             };
 
-            speedSlider = new TrackBar
+            var turtleIcon = new PictureBox
             {
-                Height = 45,
+                Size = new Size(24, 24),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Image = Resources.slider_turtle,
+                BackColor = Color.Transparent,
+                Anchor = AnchorStyles.None,
+                Margin = new Padding(0, 0, 8, 0)
+            };
+
+            speedSlider = new FlatTrackBar
+            {
+                Height = 24,
                 Minimum = 1,
                 Maximum = 10,
                 Value = 5,
-                TickStyle = TickStyle.None,
-                AutoSize = false,
                 Anchor = AnchorStyles.Left | AnchorStyles.Right,
                 Margin = new Padding(0)
             };
             toolTip.SetToolTip(speedSlider, Strings.CustomRunner_PreviewSpeed);
 
+            var rabbitIcon = new PictureBox
+            {
+                Size = new Size(24, 24),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Image = Resources.slider_rabbit,
+                BackColor = Color.Transparent,
+                Anchor = AnchorStyles.None,
+                Margin = new Padding(8, 0, 0, 0)
+            };
+
             var area = new TableLayoutPanel
             {
                 AutoSize = true,
                 AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                ColumnCount = 2,
+                ColumnCount = 4,
                 RowCount = 1,
                 BackColor = Color.Transparent
             };
             area.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            area.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             area.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            area.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             area.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             area.Controls.Add(previewView, 0, 0);
-            area.Controls.Add(speedSlider, 1, 0);
+            area.Controls.Add(turtleIcon, 1, 0);
+            area.Controls.Add(speedSlider, 2, 0);
+            area.Controls.Add(rabbitIcon, 3, 0);
             return area;
         }
 
@@ -415,7 +442,7 @@ namespace RunCat365
                 FlatStyle = FlatStyle.Flat,
                 BackColor = Palette.ButtonBackground,
                 ForeColor = Palette.TextPrimary,
-                Font = new Font(fontFamily, 12F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 11F, FontStyle.Regular),
                 Cursor = Cursors.Hand,
                 Enabled = initiallyEnabled
             };
@@ -443,7 +470,7 @@ namespace RunCat365
                 FlatStyle = FlatStyle.Flat,
                 BackColor = backColor,
                 ForeColor = Palette.TextPrimary,
-                Font = new Font(fontFamily, 12F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 11F, FontStyle.Regular),
                 Cursor = Cursors.Hand,
                 Enabled = initiallyEnabled
             };
@@ -859,14 +886,13 @@ namespace RunCat365
                 using var borderPen = new Pen(borderColor);
                 e.Graphics.FillRectangle(backBrush, ClientRectangle);
                 e.Graphics.DrawRectangle(borderPen, 0, 0, Width - 1, Height - 1);
-                TextRenderer.DrawText(
-                    e.Graphics,
-                    Text,
-                    Font,
-                    ClientRectangle,
-                    foreColor,
-                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis
+
+                var textSize = TextRenderer.MeasureText(e.Graphics, Text, Font, ClientSize, TextFormatFlags.NoPadding);
+                var location = new Point(
+                    (Width - textSize.Width) / 2,
+                    (Height - textSize.Height) / 2
                 );
+                TextRenderer.DrawText(e.Graphics, Text, Font, location, foreColor, TextFormatFlags.NoPadding);
             }
         }
     }
