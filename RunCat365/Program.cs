@@ -185,17 +185,15 @@ namespace RunCat365
 
         private void UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
         {
-            if (e.Category == UserPreferenceCategory.General)
+            if (e.Category != UserPreferenceCategory.General) return;
+            var systemTheme = GetSystemTheme();
+            if (contextMenuManager.HasActiveCustomIcons)
             {
-                var systemTheme = GetSystemTheme();
-                if (customRunnerName is not null)
-                {
-                    ApplyCustomRunner(customRunnerName);
-                }
-                else
-                {
-                    contextMenuManager.SetIcons(systemTheme, manualTheme, runner);
-                }
+                contextMenuManager.RecolorActiveCustomIcons(systemTheme, manualTheme);
+            }
+            else
+            {
+                contextMenuManager.SetIcons(systemTheme, manualTheme, runner);
             }
         }
 
