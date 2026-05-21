@@ -492,9 +492,15 @@ namespace RunCat365.Properties {
             }
         }
 
-        internal static string CustomRunner_OverwriteWarning {
+        internal static string CustomRunner_RequirementsLabel {
             get {
-                return ResourceManager.GetString("CustomRunner_OverwriteWarning", resourceCulture);
+                return ResourceManager.GetString("CustomRunner_RequirementsLabel", resourceCulture);
+            }
+        }
+
+        internal static string CustomRunner_FramesLabel {
+            get {
+                return ResourceManager.GetString("CustomRunner_FramesLabel", resourceCulture);
             }
         }
 

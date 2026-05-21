@@ -282,8 +282,11 @@
   <data name="CustomRunner_ConfirmDelete" xml:space="preserve">
     <value>¿Eliminar runner "{0}"?</value>
   </data>
-  <data name="CustomRunner_OverwriteWarning" xml:space="preserve">
-    <value>⚠️ El perfil existe. Se sobrescribirá al guardar.</value>
+  <data name="CustomRunner_RequirementsLabel" xml:space="preserve">
+    <value>Requisitos:</value>
+  </data>
+  <data name="CustomRunner_FramesLabel" xml:space="preserve">
+    <value>Fotogramas:</value>
   </data>
   <data name="CustomRunner_Preview" xml:space="preserve">
     <value>Vista previa:</value>

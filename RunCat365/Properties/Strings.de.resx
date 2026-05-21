@@ -282,8 +282,11 @@
   <data name="CustomRunner_ConfirmDelete" xml:space="preserve">
     <value>Runner "{0}" löschen?</value>
   </data>
-  <data name="CustomRunner_OverwriteWarning" xml:space="preserve">
-    <value>⚠️ Profil existiert bereits. Speichern überschreibt es.</value>
+  <data name="CustomRunner_RequirementsLabel" xml:space="preserve">
+    <value>Anforderungen:</value>
+  </data>
+  <data name="CustomRunner_FramesLabel" xml:space="preserve">
+    <value>Frames:</value>
   </data>
   <data name="CustomRunner_Preview" xml:space="preserve">
     <value>Vorschau:</value>

@@ -282,8 +282,11 @@
   <data name="CustomRunner_ConfirmDelete" xml:space="preserve">
     <value>ランナー「{0}」を削除しますか？</value>
   </data>
-  <data name="CustomRunner_OverwriteWarning" xml:space="preserve">
-    <value>⚠️ 同名のランナーが既に存在します。保存すると上書きされます。</value>
+  <data name="CustomRunner_RequirementsLabel" xml:space="preserve">
+    <value>要件:</value>
+  </data>
+  <data name="CustomRunner_FramesLabel" xml:space="preserve">
+    <value>フレーム:</value>
   </data>
   <data name="CustomRunner_Preview" xml:space="preserve">
     <value>プレビュー:</value>

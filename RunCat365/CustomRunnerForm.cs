@@ -29,9 +29,9 @@ namespace RunCat365
         private readonly Action<string> onCustomRunnerDeleted;
         private readonly string fontFamily;
         private readonly Font tileLabelFont;
+        private readonly ToolTip toolTip = new();
         private ListBox runnerListBox = null!;
         private TextBox nameTextBox = null!;
-        private Label nameWarningLabel = null!;
         private FlowLayoutPanel framePanel = null!;
         private Button addFramesButton = null!;
         private Button removeFrameButton = null!;
@@ -92,52 +92,31 @@ namespace RunCat365
 
         private void InitializeControls()
         {
-            var listSection = BuildListSection();
-            var centerSection = BuildCenterSection();
-            var previewSection = BuildPreviewSection();
-            var bottomBar = BuildBottomBar();
+            var listColumn = BuildListColumn();
+            var separator = BuildVerticalSeparator();
+            var editorColumn = BuildEditorColumn();
 
-            var topContent = new TableLayoutPanel
+            var root = new TableLayoutPanel
             {
                 AutoSize = true,
                 AutoSizeMode = AutoSizeMode.GrowAndShrink,
                 ColumnCount = 3,
                 RowCount = 1,
                 BackColor = Color.Transparent,
-                Margin = new Padding(0, 0, 0, 12)
-            };
-            topContent.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            topContent.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            topContent.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            topContent.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            listSection.Margin = new Padding(0, 0, 16, 0);
-            centerSection.Margin = new Padding(0, 0, 16, 0);
-            previewSection.Margin = new Padding(0);
-            topContent.Controls.Add(listSection, 0, 0);
-            topContent.Controls.Add(centerSection, 1, 0);
-            topContent.Controls.Add(previewSection, 2, 0);
-
-            var root = new TableLayoutPanel
-            {
-                AutoSize = true,
-                AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                ColumnCount = 1,
-                RowCount = 2,
-                BackColor = Color.Transparent,
                 Location = new Point(0, 0)
             };
             root.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            root.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            root.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
             root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            bottomBar.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            bottomBar.Margin = new Padding(0);
-            root.Controls.Add(topContent, 0, 0);
-            root.Controls.Add(bottomBar, 0, 1);
+            root.Controls.Add(listColumn, 0, 0);
+            root.Controls.Add(separator, 1, 0);
+            root.Controls.Add(editorColumn, 2, 0);
 
             Controls.Add(root);
         }
 
-        private TableLayoutPanel BuildListSection()
+        private TableLayoutPanel BuildListColumn()
         {
             var listLabel = CreateLabel(
                 Strings.CustomRunner_AddedRunners,
@@ -147,30 +126,54 @@ namespace RunCat365
 
             runnerListBox = new ListBox
             {
-                Size = new Size(160, 391),
-                MinimumSize = new Size(160, 391),
+                MinimumSize = new Size(160, 360),
                 BackColor = Palette.ControlBackground,
                 ForeColor = Palette.TextPrimary,
                 Font = new Font(fontFamily, 9F),
                 BorderStyle = BorderStyle.FixedSingle,
                 IntegralHeight = false,
-                Margin = new Padding(0)
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
+                Margin = new Padding(0, 0, 0, 8)
             };
 
-            var section = new TableLayoutPanel
+            deleteButton = CreateIconColoredButton(
+                "×",
+                new Size(32, 28),
+                Palette.DangerRed,
+                Palette.DangerBorder,
+                Strings.CustomRunner_Delete,
+                initiallyEnabled: false
+            );
+            deleteButton.Anchor = AnchorStyles.Left;
+            deleteButton.Margin = new Padding(0);
+
+            var column = new TableLayoutPanel
             {
                 AutoSize = true,
                 AutoSizeMode = AutoSizeMode.GrowAndShrink,
                 ColumnCount = 1,
-                RowCount = 2,
+                RowCount = 3,
                 BackColor = Color.Transparent
             };
-            section.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            section.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            section.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            section.Controls.Add(listLabel, 0, 0);
-            section.Controls.Add(runnerListBox, 0, 1);
-            return section;
+            column.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            column.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            column.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            column.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            column.Controls.Add(listLabel, 0, 0);
+            column.Controls.Add(runnerListBox, 0, 1);
+            column.Controls.Add(deleteButton, 0, 2);
+            return column;
+        }
+
+        private static Panel BuildVerticalSeparator()
+        {
+            return new Panel
+            {
+                Width = 1,
+                BackColor = Palette.BorderAccent,
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom,
+                Margin = new Padding(12, 0, 12, 0)
+            };
         }
 
         private Label CreateLabel(string text, float fontSize, FontStyle fontStyle, Color foreColor)
@@ -187,181 +190,60 @@ namespace RunCat365
             };
         }
 
-        private TableLayoutPanel BuildCenterSection()
+        private TableLayoutPanel BuildEditorColumn()
         {
             var nameLabel = CreateLabel(
                 Strings.CustomRunner_Name,
                 9F, FontStyle.Regular, Palette.TextSecondary
             );
-            nameLabel.Margin = new Padding(0, 6, 8, 0);
+            nameLabel.Margin = new Padding(0, 6, 12, 8);
             nameLabel.TextAlign = ContentAlignment.MiddleLeft;
 
             nameTextBox = new TextBox
             {
-                Size = new Size(280, 24),
+                MinimumSize = new Size(280, 24),
                 BackColor = Palette.ControlBackground,
                 ForeColor = Palette.TextPrimary,
                 Font = new Font(fontFamily, 9F),
                 BorderStyle = BorderStyle.FixedSingle,
                 MaxLength = FRAME_NAME_MAX_LENGTH,
                 Anchor = AnchorStyles.Left | AnchorStyles.Right,
-                Margin = new Padding(0)
-            };
-
-            var nameRow = new TableLayoutPanel
-            {
-                AutoSize = true,
-                AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                ColumnCount = 2,
-                RowCount = 1,
-                BackColor = Color.Transparent,
-                Anchor = AnchorStyles.Left | AnchorStyles.Right,
                 Margin = new Padding(0, 0, 0, 8)
             };
-            nameRow.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            nameRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            nameRow.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            nameRow.Controls.Add(nameLabel, 0, 0);
-            nameRow.Controls.Add(nameTextBox, 1, 0);
 
-            var requirementsLabel = CreateLabel(
+            var requirementsCaption = CreateLabel(
+                Strings.CustomRunner_RequirementsLabel,
+                9F, FontStyle.Regular, Palette.TextSecondary
+            );
+            requirementsCaption.Margin = new Padding(0, 0, 12, 8);
+
+            var requirementsContent = CreateLabel(
                 Strings.CustomRunner_Requirements,
-                7.5F, FontStyle.Regular, Palette.TextMuted
+                9F, FontStyle.Regular, Palette.TextMuted
             );
-            requirementsLabel.Margin = new Padding(0, 0, 0, 4);
+            requirementsContent.Margin = new Padding(0, 0, 0, 8);
 
-            nameWarningLabel = CreateLabel(
-                Strings.CustomRunner_OverwriteWarning,
-                7.5F, FontStyle.Regular, Palette.WarningOrange
+            var framesCaption = CreateLabel(
+                Strings.CustomRunner_FramesLabel,
+                9F, FontStyle.Regular, Palette.TextSecondary
             );
-            nameWarningLabel.Anchor = AnchorStyles.Right;
-            nameWarningLabel.Visible = false;
-            nameWarningLabel.Margin = new Padding(0, 0, 0, 8);
+            framesCaption.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            framesCaption.Margin = new Padding(0, 0, 12, 8);
 
-            addFramesButton = CreateActionButton(
-                Strings.CustomRunner_AddFrames,
-                new Size(110, 28)
-            );
-            addFramesButton.Margin = new Padding(0, 0, 8, 0);
+            var framesArea = BuildFramesArea();
+            framesArea.Margin = new Padding(0, 0, 0, 8);
+            framesArea.Anchor = AnchorStyles.Left | AnchorStyles.Right;
 
-            removeFrameButton = CreateActionButton(
-                Strings.CustomRunner_RemoveFrame,
-                new Size(110, 28),
-                initiallyEnabled: false
-            );
-            removeFrameButton.Margin = new Padding(0);
-
-            var actionButtonRow = new FlowLayoutPanel
-            {
-                AutoSize = true,
-                AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                FlowDirection = FlowDirection.LeftToRight,
-                WrapContents = false,
-                BackColor = Color.Transparent,
-                Margin = new Padding(0, 0, 0, 8)
-            };
-            actionButtonRow.Controls.Add(addFramesButton);
-            actionButtonRow.Controls.Add(removeFrameButton);
-
-            framePanel = new FlowLayoutPanel
-            {
-                Size = new Size(350, 312),
-                AutoScroll = true,
-                BackColor = Palette.FramePanelBackground,
-                BorderStyle = BorderStyle.FixedSingle,
-                WrapContents = true,
-                AllowDrop = true,
-                Margin = new Padding(0)
-            };
-            framePanel.DragEnter += FrameDragOver;
-            framePanel.DragOver += FrameDragOver;
-            framePanel.DragDrop += FramePanelDragDrop;
-
-            var section = new TableLayoutPanel
-            {
-                AutoSize = true,
-                AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                ColumnCount = 1,
-                RowCount = 5,
-                BackColor = Color.Transparent
-            };
-            section.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            for (int i = 0; i < 5; i++)
-            {
-                section.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            }
-            section.Controls.Add(nameRow, 0, 0);
-            section.Controls.Add(requirementsLabel, 0, 1);
-            section.Controls.Add(nameWarningLabel, 0, 2);
-            section.Controls.Add(actionButtonRow, 0, 3);
-            section.Controls.Add(framePanel, 0, 4);
-            return section;
-        }
-
-        private TableLayoutPanel BuildPreviewSection()
-        {
-            var previewLabel = CreateLabel(
+            var previewCaption = CreateLabel(
                 Strings.CustomRunner_Preview,
-                8.5F, FontStyle.Regular, Palette.TextSecondary
+                9F, FontStyle.Regular, Palette.TextSecondary
             );
-            previewLabel.Margin = new Padding(0, 0, 0, 4);
+            previewCaption.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            previewCaption.Margin = new Padding(0, 0, 12, 8);
 
-            previewView = new FrameAnimationView
-            {
-                Size = new Size(142, 142),
-                BackColor = Palette.FramePanelBackground,
-                FrameIntervalMs = PREVIEW_INITIAL_INTERVAL_MS,
-                Margin = new Padding(0, 0, 0, 12)
-            };
-
-            var speedLabel = CreateLabel(
-                Strings.CustomRunner_PreviewSpeed,
-                8.5F, FontStyle.Regular, Palette.TextSecondary
-            );
-            speedLabel.Margin = new Padding(0, 0, 0, 4);
-
-            speedSlider = new TrackBar
-            {
-                Size = new Size(142, 45),
-                Minimum = 1,
-                Maximum = 10,
-                Value = 5,
-                TickStyle = TickStyle.None,
-                AutoSize = false,
-                Margin = new Padding(0)
-            };
-
-            var section = new TableLayoutPanel
-            {
-                AutoSize = true,
-                AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                ColumnCount = 1,
-                RowCount = 4,
-                BackColor = Color.Transparent
-            };
-            section.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            for (int i = 0; i < 4; i++)
-            {
-                section.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            }
-            section.Controls.Add(previewLabel, 0, 0);
-            section.Controls.Add(previewView, 0, 1);
-            section.Controls.Add(speedLabel, 0, 2);
-            section.Controls.Add(speedSlider, 0, 3);
-            return section;
-        }
-
-        private TableLayoutPanel BuildBottomBar()
-        {
-            deleteButton = CreateColoredButton(
-                Strings.CustomRunner_Delete,
-                new Size(75, 30),
-                Palette.DangerRed,
-                Palette.DangerBorder,
-                bold: false,
-                initiallyEnabled: false
-            );
-            deleteButton.Margin = new Padding(0);
+            var previewArea = BuildPreviewArea();
+            previewArea.Margin = new Padding(0, 0, 0, 8);
+            previewArea.Anchor = AnchorStyles.Left | AnchorStyles.Right;
 
             saveButton = CreateColoredButton(
                 Strings.CustomRunner_Save,
@@ -371,24 +253,134 @@ namespace RunCat365
                 bold: true,
                 initiallyEnabled: false
             );
-            saveButton.Margin = new Padding(0);
             saveButton.Anchor = AnchorStyles.Right;
+            saveButton.Margin = new Padding(0);
 
-            var bar = new TableLayoutPanel
+            var column = new TableLayoutPanel
             {
                 AutoSize = true,
                 AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                ColumnCount = 3,
+                ColumnCount = 2,
+                RowCount = 5,
+                BackColor = Color.Transparent
+            };
+            column.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            column.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            for (int i = 0; i < 5; i++)
+            {
+                column.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            }
+
+            column.Controls.Add(nameLabel, 0, 0);
+            column.Controls.Add(nameTextBox, 1, 0);
+            column.Controls.Add(requirementsCaption, 0, 1);
+            column.Controls.Add(requirementsContent, 1, 1);
+            column.Controls.Add(framesCaption, 0, 2);
+            column.Controls.Add(framesArea, 1, 2);
+            column.Controls.Add(previewCaption, 0, 3);
+            column.Controls.Add(previewArea, 1, 3);
+            column.Controls.Add(saveButton, 1, 4);
+            return column;
+        }
+
+        private TableLayoutPanel BuildFramesArea()
+        {
+            framePanel = new FlowLayoutPanel
+            {
+                MinimumSize = new Size(350, 280),
+                AutoScroll = true,
+                BackColor = Palette.FramePanelBackground,
+                BorderStyle = BorderStyle.FixedSingle,
+                WrapContents = true,
+                AllowDrop = true,
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                Margin = new Padding(0, 0, 0, 4)
+            };
+            framePanel.DragEnter += FrameDragOver;
+            framePanel.DragOver += FrameDragOver;
+            framePanel.DragDrop += FramePanelDragDrop;
+
+            addFramesButton = CreateIconButton(
+                "+",
+                new Size(28, 24),
+                Strings.CustomRunner_AddFrames
+            );
+            addFramesButton.Margin = new Padding(0, 0, 4, 0);
+
+            removeFrameButton = CreateIconButton(
+                "−",
+                new Size(28, 24),
+                Strings.CustomRunner_RemoveFrame,
+                initiallyEnabled: false
+            );
+            removeFrameButton.Margin = new Padding(0);
+
+            var buttonRow = new FlowLayoutPanel
+            {
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false,
+                BackColor = Color.Transparent,
+                Anchor = AnchorStyles.Left,
+                Margin = new Padding(0)
+            };
+            buttonRow.Controls.Add(addFramesButton);
+            buttonRow.Controls.Add(removeFrameButton);
+
+            var area = new TableLayoutPanel
+            {
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                ColumnCount = 1,
+                RowCount = 2,
+                BackColor = Color.Transparent
+            };
+            area.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            area.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            area.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            area.Controls.Add(framePanel, 0, 0);
+            area.Controls.Add(buttonRow, 0, 1);
+            return area;
+        }
+
+        private TableLayoutPanel BuildPreviewArea()
+        {
+            previewView = new FrameAnimationView
+            {
+                Size = new Size(142, 142),
+                BackColor = Palette.FramePanelBackground,
+                FrameIntervalMs = PREVIEW_INITIAL_INTERVAL_MS,
+                Margin = new Padding(0, 0, 12, 0)
+            };
+
+            speedSlider = new TrackBar
+            {
+                Height = 45,
+                Minimum = 1,
+                Maximum = 10,
+                Value = 5,
+                TickStyle = TickStyle.None,
+                AutoSize = false,
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                Margin = new Padding(0)
+            };
+            toolTip.SetToolTip(speedSlider, Strings.CustomRunner_PreviewSpeed);
+
+            var area = new TableLayoutPanel
+            {
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                ColumnCount = 2,
                 RowCount = 1,
                 BackColor = Color.Transparent
             };
-            bar.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            bar.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            bar.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            bar.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            bar.Controls.Add(deleteButton, 0, 0);
-            bar.Controls.Add(saveButton, 2, 0);
-            return bar;
+            area.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            area.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            area.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            area.Controls.Add(previewView, 0, 0);
+            area.Controls.Add(speedSlider, 1, 0);
+            return area;
         }
 
         private void InitializeEventHandlers()
@@ -411,23 +403,52 @@ namespace RunCat365
             saveButton.Click += SaveButtonClick;
         }
 
-        private ThemedButton CreateActionButton(string text, Size minimumSize, bool initiallyEnabled = true)
+        private ThemedButton CreateIconButton(string glyph, Size size, string tooltipText, bool initiallyEnabled = true)
         {
             var button = new ThemedButton
             {
-                Text = text,
-                AutoSize = true,
-                AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                MinimumSize = minimumSize,
-                Padding = new Padding(10, 4, 10, 4),
+                Text = glyph,
+                AutoSize = false,
+                Size = size,
+                MinimumSize = size,
+                Padding = new Padding(0),
                 FlatStyle = FlatStyle.Flat,
                 BackColor = Palette.ButtonBackground,
                 ForeColor = Palette.TextPrimary,
-                Font = new Font(fontFamily, 8.5F),
+                Font = new Font(fontFamily, 12F, FontStyle.Bold),
                 Cursor = Cursors.Hand,
                 Enabled = initiallyEnabled
             };
             button.FlatAppearance.BorderColor = Palette.BorderAccent;
+            toolTip.SetToolTip(button, tooltipText);
+            return button;
+        }
+
+        private ThemedButton CreateIconColoredButton(
+            string glyph,
+            Size size,
+            Color backColor,
+            Color borderColor,
+            string tooltipText,
+            bool initiallyEnabled
+        )
+        {
+            var button = new ThemedButton
+            {
+                Text = glyph,
+                AutoSize = false,
+                Size = size,
+                MinimumSize = size,
+                Padding = new Padding(0),
+                FlatStyle = FlatStyle.Flat,
+                BackColor = backColor,
+                ForeColor = Palette.TextPrimary,
+                Font = new Font(fontFamily, 12F, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Enabled = initiallyEnabled
+            };
+            button.FlatAppearance.BorderColor = borderColor;
+            toolTip.SetToolTip(button, tooltipText);
             return button;
         }
 
@@ -473,6 +494,7 @@ namespace RunCat365
                 foreach (var frame in recoloredFrames) frame.Dispose();
                 recoloredFrames.Clear();
                 tileLabelFont.Dispose();
+                toolTip.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -716,7 +738,6 @@ namespace RunCat365
 
             saveButton.Enabled = hasValidName && hasValidFrames;
 
-            nameWarningLabel.Visible = hasValidName && repository.Exists(name);
             UpdateFrameActionButtons();
         }
 
@@ -809,7 +830,6 @@ namespace RunCat365
             internal static readonly Color TextSecondary = Color.FromArgb(200, 200, 200);
             internal static readonly Color TextMuted = Color.FromArgb(150, 150, 150);
             internal static readonly Color TextThumbnailIndex = Color.FromArgb(170, 170, 170);
-            internal static readonly Color WarningOrange = Color.FromArgb(220, 160, 60);
             internal static readonly Color DangerRed = Color.FromArgb(120, 40, 40);
             internal static readonly Color DangerBorder = Color.FromArgb(150, 60, 60);
             internal static readonly Color AccentBlue = Color.FromArgb(50, 90, 160);

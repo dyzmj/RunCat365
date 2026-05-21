@@ -282,8 +282,11 @@
   <data name="CustomRunner_ConfirmDelete" xml:space="preserve">
     <value>删除跑步者"{0}"？</value>
   </data>
-  <data name="CustomRunner_OverwriteWarning" xml:space="preserve">
-    <value>⚠️ 同名跑步者已存在。保存将覆盖。</value>
+  <data name="CustomRunner_RequirementsLabel" xml:space="preserve">
+    <value>要求:</value>
+  </data>
+  <data name="CustomRunner_FramesLabel" xml:space="preserve">
+    <value>帧:</value>
   </data>
   <data name="CustomRunner_Preview" xml:space="preserve">
     <value>预览:</value>
