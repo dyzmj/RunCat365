@@ -1,13 +1,29 @@
+﻿// Copyright 2025 Takuto Nakamura
+//
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+//
+//        http://www.apache.org/licenses/LICENSE-2.0
+//
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Text.Json;
 
 namespace RunCat365
 {
     internal class CustomRunnerRepository
     {
+        internal const int MAX_FRAME_COUNT = 30;
         private const int MAX_FRAME_HEIGHT = 32;
         private const int MIN_FRAME_WIDTH = 10;
         private const int MAX_FRAME_WIDTH = 32;
-        private const int MAX_FRAME_COUNT = 30;
         private const string PROFILES_FILE_NAME = "profiles.json";
 
         private readonly string basePath;
@@ -45,9 +61,32 @@ namespace RunCat365
             {
                 var filePath = Path.Combine(runnerDirectory, fileName);
                 if (!File.Exists(filePath)) continue;
-                frames.Add(new Bitmap(filePath));
+                var frame = TryLoadBitmap(filePath);
+                if (frame is not null) frames.Add(frame);
             }
             return frames;
+        }
+
+        internal Bitmap? LoadFirstFrame(string name)
+        {
+            var profile = GetByName(name);
+            if (profile is null || profile.FrameFileNames.Count == 0) return null;
+            var runnerDirectory = Path.Combine(basePath, SanitizeDirectoryName(name));
+            var filePath = Path.Combine(runnerDirectory, profile.FrameFileNames[0]);
+            return File.Exists(filePath) ? TryLoadBitmap(filePath) : null;
+        }
+
+        private static Bitmap? TryLoadBitmap(string filePath)
+        {
+            try
+            {
+                return new Bitmap(filePath);
+            }
+            catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException or FileNotFoundException)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to load custom runner frame '{filePath}': {ex.Message}");
+                return null;
+            }
         }
 
         internal bool Save(string name, List<Bitmap> frames)
@@ -68,17 +107,15 @@ namespace RunCat365
             var profile = new CustomRunnerProfile { Name = name };
             for (int i = 0; i < frames.Count; i++)
             {
-                var resized = ResizeFrame(frames[i]);
+                using var resized = ResizeFrame(frames[i]);
                 var fileName = $"frame_{i}.png";
                 var filePath = Path.Combine(runnerDirectory, fileName);
-                resized.Save(filePath, System.Drawing.Imaging.ImageFormat.Png);
+                resized.Save(filePath, ImageFormat.Png);
                 profile.FrameFileNames.Add(fileName);
-                if (resized != frames[i]) resized.Dispose();
             }
 
             profiles.Add(profile);
-            SaveProfiles();
-            return true;
+            return TrySaveProfiles();
         }
 
         internal bool Delete(string name)
@@ -95,10 +132,13 @@ namespace RunCat365
                     Directory.Delete(runnerDirectory, true);
                 }
             }
-            catch { }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to delete runner directory '{runnerDirectory}': {ex.Message}");
+            }
 
             profiles.Remove(profile);
-            SaveProfiles();
+            TrySaveProfiles();
             return true;
         }
 
@@ -120,18 +160,28 @@ namespace RunCat365
                 var json = File.ReadAllText(profilesPath);
                 profiles = JsonSerializer.Deserialize<List<CustomRunnerProfile>>(json) ?? [];
             }
-            catch
+            catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException)
             {
+                System.Diagnostics.Debug.WriteLine($"Failed to load custom runner profiles: {ex.Message}");
                 profiles = [];
             }
         }
 
-        private void SaveProfiles()
+        private bool TrySaveProfiles()
         {
             var profilesPath = Path.Combine(basePath, PROFILES_FILE_NAME);
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            var json = JsonSerializer.Serialize(profiles, options);
-            File.WriteAllText(profilesPath, json);
+            try
+            {
+                var options = new JsonSerializerOptions { WriteIndented = true };
+                var json = JsonSerializer.Serialize(profiles, options);
+                File.WriteAllText(profilesPath, json);
+                return true;
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to write custom runner profiles: {ex.Message}");
+                return false;
+            }
         }
 
         private void DeleteFrameFiles(CustomRunnerProfile profile)
@@ -140,7 +190,14 @@ namespace RunCat365
             foreach (var fileName in profile.FrameFileNames)
             {
                 var filePath = Path.Combine(runnerDirectory, fileName);
-                try { File.Delete(filePath); } catch { }
+                try
+                {
+                    File.Delete(filePath);
+                }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Failed to delete frame file '{filePath}': {ex.Message}");
+                }
             }
         }
 
@@ -150,7 +207,7 @@ namespace RunCat365
                 original.Width >= MIN_FRAME_WIDTH &&
                 original.Width <= MAX_FRAME_WIDTH)
             {
-                return original;
+                return new Bitmap(original);
             }
 
             var scale = (float)MAX_FRAME_HEIGHT / original.Height;
@@ -159,7 +216,7 @@ namespace RunCat365
 
             var resized = new Bitmap(newWidth, newHeight);
             using var graphics = Graphics.FromImage(resized);
-            graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
             graphics.DrawImage(original, 0, 0, newWidth, newHeight);
             return resized;
         }
