@@ -258,17 +258,8 @@
   <data name="CustomRunner_AddFrames" xml:space="preserve">
     <value>フレーム追加...</value>
   </data>
-  <data name="CustomRunner_ClearFrames" xml:space="preserve">
-    <value>クリア</value>
-  </data>
   <data name="CustomRunner_RemoveFrame" xml:space="preserve">
     <value>フレームを削除</value>
-  </data>
-  <data name="CustomRunner_MoveFrameUp" xml:space="preserve">
-    <value>上へ</value>
-  </data>
-  <data name="CustomRunner_MoveFrameDown" xml:space="preserve">
-    <value>下へ</value>
   </data>
   <data name="CustomRunner_Save" xml:space="preserve">
     <value>保存</value>

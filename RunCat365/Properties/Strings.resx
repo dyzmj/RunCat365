@@ -258,17 +258,8 @@
   <data name="CustomRunner_AddFrames" xml:space="preserve">
     <value>Add Frames...</value>
   </data>
-  <data name="CustomRunner_ClearFrames" xml:space="preserve">
-    <value>Clear</value>
-  </data>
   <data name="CustomRunner_RemoveFrame" xml:space="preserve">
     <value>Remove Frame</value>
-  </data>
-  <data name="CustomRunner_MoveFrameUp" xml:space="preserve">
-    <value>Up</value>
-  </data>
-  <data name="CustomRunner_MoveFrameDown" xml:space="preserve">
-    <value>Down</value>
   </data>
   <data name="CustomRunner_Save" xml:space="preserve">
     <value>Save</value>

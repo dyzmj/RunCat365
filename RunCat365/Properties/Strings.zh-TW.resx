@@ -258,17 +258,8 @@
   <data name="CustomRunner_AddFrames" xml:space="preserve">
     <value>新增影格...</value>
   </data>
-  <data name="CustomRunner_ClearFrames" xml:space="preserve">
-    <value>清除</value>
-  </data>
   <data name="CustomRunner_RemoveFrame" xml:space="preserve">
     <value>刪除影格</value>
-  </data>
-  <data name="CustomRunner_MoveFrameUp" xml:space="preserve">
-    <value>上移</value>
-  </data>
-  <data name="CustomRunner_MoveFrameDown" xml:space="preserve">
-    <value>下移</value>
   </data>
   <data name="CustomRunner_Save" xml:space="preserve">
     <value>儲存</value>

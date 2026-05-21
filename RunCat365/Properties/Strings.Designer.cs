@@ -444,27 +444,9 @@ namespace RunCat365.Properties {
             }
         }
 
-        internal static string CustomRunner_ClearFrames {
-            get {
-                return ResourceManager.GetString("CustomRunner_ClearFrames", resourceCulture);
-            }
-        }
-
         internal static string CustomRunner_RemoveFrame {
             get {
                 return ResourceManager.GetString("CustomRunner_RemoveFrame", resourceCulture);
-            }
-        }
-
-        internal static string CustomRunner_MoveFrameUp {
-            get {
-                return ResourceManager.GetString("CustomRunner_MoveFrameUp", resourceCulture);
-            }
-        }
-
-        internal static string CustomRunner_MoveFrameDown {
-            get {
-                return ResourceManager.GetString("CustomRunner_MoveFrameDown", resourceCulture);
             }
         }
 
