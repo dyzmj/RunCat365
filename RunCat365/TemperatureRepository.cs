@@ -1,4 +1,4 @@
-// Copyright 2025 Takuto Nakamura
+﻿// Copyright 2025 Takuto Nakamura
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -26,6 +26,9 @@ namespace RunCat365
 
     internal static class TemperatureInfoExtension
     {
+        private const float CELSIUS_TO_FAHRENHEIT_SCALE = 9.0f / 5.0f;
+        private const float CELSIUS_TO_FAHRENHEIT_OFFSET = 32.0f;
+
         private static readonly bool usesFahrenheit = UsesFahrenheit();
 
         internal static string GetDescription(this TemperatureInfo temperatureInfo)
@@ -44,7 +47,9 @@ namespace RunCat365
 
         private static string ToLocalizedTemperatureText(this float temperatureCelsius)
         {
-            var value = usesFahrenheit ? temperatureCelsius * 9.0f / 5.0f + 32.0f : temperatureCelsius;
+            var value = usesFahrenheit
+                ? temperatureCelsius * CELSIUS_TO_FAHRENHEIT_SCALE + CELSIUS_TO_FAHRENHEIT_OFFSET
+                : temperatureCelsius;
             var format = usesFahrenheit
                 ? Strings.SystemInfo_TemperatureFahrenheitFormat
                 : Strings.SystemInfo_TemperatureCelsiusFormat;
@@ -57,61 +62,82 @@ namespace RunCat365
             {
                 return !new RegionInfo(CultureInfo.CurrentCulture.Name).IsMetric;
             }
-            catch
+            catch (ArgumentException)
             {
                 return false;
             }
         }
     }
 
-    internal class TemperatureRepository
+    internal class TemperaturePerformanceCounters
     {
-        private const float MIN_VALID_TEMPERATURE_CELSIUS = 0.0f;
-        private const float MAX_VALID_TEMPERATURE_CELSIUS = 150.0f;
-        private readonly List<PerformanceCounter> temperatureCounters = [];
-        private TemperatureInfo? temperatureInfo;
+        private const string CATEGORY_NAME = "Thermal Zone Information";
+        private const string COUNTER_NAME = "Temperature";
 
-        internal bool IsAvailable { get; private set; } = true;
+        internal IReadOnlyList<PerformanceCounter> Counters { get; }
 
-        internal TemperatureRepository()
+        private TemperaturePerformanceCounters(List<PerformanceCounter> counters)
         {
+            Counters = counters;
+        }
+
+        internal static TemperaturePerformanceCounters? TryCreate()
+        {
+            var counters = new List<PerformanceCounter>();
             try
             {
-                var category = new PerformanceCounterCategory("Thermal Zone Information");
+                var category = new PerformanceCounterCategory(CATEGORY_NAME);
                 var instanceNames = category.GetInstanceNames();
-                if (instanceNames.Length > 0)
-                {
-                    foreach (var instance in instanceNames)
-                    {
-                        var counter = new PerformanceCounter("Thermal Zone Information", "Temperature", instance);
-                        temperatureCounters.Add(counter);
+                if (instanceNames.Length == 0) return null;
 
-                        // Discards first return value
-                        _ = counter.NextValue();
-                    }
-                }
-                else
+                foreach (var instance in instanceNames)
                 {
-                    IsAvailable = false;
+                    var counter = new PerformanceCounter(CATEGORY_NAME, COUNTER_NAME, instance);
+                    counters.Add(counter);
+                    _ = counter.NextValue();
                 }
+                return new TemperaturePerformanceCounters(counters);
             }
             catch
             {
-                IsAvailable = false;
+                foreach (var counter in counters) counter.Close();
+                return null;
             }
+        }
+
+        internal void Close()
+        {
+            foreach (var counter in Counters) counter.Close();
+        }
+    }
+
+    internal class TemperatureRepository
+    {
+        private const float KELVIN_TO_CELSIUS_OFFSET = 273.15f;
+        private const float MIN_VALID_TEMPERATURE_CELSIUS = -50.0f;
+        private const float MAX_VALID_TEMPERATURE_CELSIUS = 150.0f;
+
+        private readonly TemperaturePerformanceCounters? counters;
+        private TemperatureInfo? temperatureInfo;
+
+        internal bool IsAvailable => counters is not null;
+
+        internal TemperatureRepository()
+        {
+            counters = TemperaturePerformanceCounters.TryCreate();
         }
 
         internal void Update()
         {
-            if (!IsAvailable || temperatureCounters.Count == 0) return;
+            if (counters is null) return;
             try
             {
                 var temperaturesCelsius = new List<float>();
-                foreach (var counter in temperatureCounters)
+                foreach (var counter in counters.Counters)
                 {
                     var temperatureKelvin = counter.NextValue();
                     if (temperatureKelvin <= 0) continue;
-                    var temperatureCelsius = temperatureKelvin - 273.15f;
+                    var temperatureCelsius = temperatureKelvin - KELVIN_TO_CELSIUS_OFFSET;
                     if (temperatureCelsius is < MIN_VALID_TEMPERATURE_CELSIUS or > MAX_VALID_TEMPERATURE_CELSIUS) continue;
                     temperaturesCelsius.Add(temperatureCelsius);
                 }
@@ -124,24 +150,20 @@ namespace RunCat365
                         MaximumCelsius = temperaturesCelsius.Max()
                     };
             }
-            catch
+            catch (InvalidOperationException)
             {
-                IsAvailable = false;
+                temperatureInfo = null;
             }
         }
 
         internal TemperatureInfo? Get()
         {
-            if (!IsAvailable || !temperatureInfo.HasValue) return null;
-            return temperatureInfo.Value;
+            return temperatureInfo;
         }
 
         internal void Close()
         {
-            foreach (var counter in temperatureCounters)
-            {
-                counter.Close();
-            }
+            counters?.Close();
         }
     }
 }
