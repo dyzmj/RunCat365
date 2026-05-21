@@ -96,7 +96,6 @@ namespace RunCat365
 
         internal NetworkInfo Get()
         {
-            Update();
             return networkInfo;
         }
     }

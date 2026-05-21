@@ -123,7 +123,6 @@ namespace RunCat365
 
         internal List<StorageInfo> Get()
         {
-            Update();
             return storageInfoList;
         }
     }

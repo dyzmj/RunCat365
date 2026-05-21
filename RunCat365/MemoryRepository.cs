@@ -70,7 +70,6 @@ namespace RunCat365
 
         internal MemoryInfo Get()
         {
-            Update();
             return memoryInfo;
         }
 

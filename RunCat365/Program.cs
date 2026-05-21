@@ -72,6 +72,7 @@ namespace RunCat365
         private SpeedSource speedSource = SpeedSource.CPU;
         private string? customRunnerName;
         private int fetchCounter = 5;
+        private bool isFetching;
 
         public RunCat365ApplicationContext()
         {
@@ -329,18 +330,37 @@ namespace RunCat365
             return CalculateInterval(cpuInfo, gpuInfo, memoryInfo);
         }
 
-        private void FetchTick(object? state, EventArgs e)
+        private async void FetchTick(object? sender, EventArgs e)
         {
-            cpuRepository.Update();
-            gpuRepository.Update();
-            fetchCounter += 1;
-            if (fetchCounter < FETCH_COUNTER_SIZE) return;
-            fetchCounter = 0;
-            temperatureRepository.Update();
-            var interval = FetchSystemInfo();
-            animateTimer.Stop();
-            animateTimer.Interval = interval;
-            animateTimer.Start();
+            if (isFetching) return;
+            isFetching = true;
+            try
+            {
+                var doHeavySlice = await Task.Run(() =>
+                {
+                    cpuRepository.Update();
+                    gpuRepository.Update();
+                    fetchCounter += 1;
+                    if (fetchCounter < FETCH_COUNTER_SIZE) return false;
+                    fetchCounter = 0;
+                    temperatureRepository.Update();
+                    memoryRepository.Update();
+                    storageRepository.Update();
+                    networkRepository.Update();
+                    return true;
+                });
+
+                if (!doHeavySlice) return;
+
+                var interval = FetchSystemInfo();
+                animateTimer.Stop();
+                animateTimer.Interval = interval;
+                animateTimer.Start();
+            }
+            finally
+            {
+                isFetching = false;
+            }
         }
 
         protected override void Dispose(bool disposing)
