@@ -38,9 +38,9 @@ namespace RunCat365
             };
         }
 
-        internal static float GetRate(this FPSMaxLimit fPSMaxLimit)
+        internal static float GetRate(this FPSMaxLimit fpsMaxLimit)
         {
-            return fPSMaxLimit switch
+            return fpsMaxLimit switch
             {
                 FPSMaxLimit.FPS40 => 1f,
                 FPSMaxLimit.FPS30 => 0.75f,

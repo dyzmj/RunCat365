@@ -20,6 +20,7 @@ namespace RunCat365
 {
     internal class CustomRunnerRepository
     {
+        internal const int MIN_FRAME_COUNT = 2;
         internal const int MAX_FRAME_COUNT = 30;
         private const int MAX_FRAME_HEIGHT = 32;
         private const int MIN_FRAME_WIDTH = 10;
@@ -92,7 +93,7 @@ namespace RunCat365
         internal bool Save(string name, List<Bitmap> frames)
         {
             if (string.IsNullOrWhiteSpace(name)) return false;
-            if (frames.Count < 2 || frames.Count > MAX_FRAME_COUNT) return false;
+            if (frames.Count < MIN_FRAME_COUNT || frames.Count > MAX_FRAME_COUNT) return false;
 
             var runnerDirectory = Path.Combine(basePath, SanitizeDirectoryName(name));
             Directory.CreateDirectory(runnerDirectory);

@@ -33,7 +33,6 @@ namespace RunCat365
             CultureInfo.CurrentUICulture = defaultCultureInfo;
             CultureInfo.CurrentCulture = defaultCultureInfo;
 
-            // Terminate RunCat365 if there's any existing instance.
             using var procMutex = new Mutex(true, "_RUNCAT_MUTEX", out var result);
             if (!result) return;
 
@@ -114,7 +113,7 @@ namespace RunCat365
                 () => fpsMaxLimit,
                 f => ChangeFPSMaxLimit(f),
                 () => launchAtStartupManager.GetStartup(),
-                s => launchAtStartupManager.SetStartup(s),
+                s => launchAtStartupManager.ToggleStartup(s),
                 () => OpenProjectPage(),
                 () => Application.Exit()
             );

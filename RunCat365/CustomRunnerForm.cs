@@ -22,8 +22,7 @@ namespace RunCat365
         private const int PREVIEW_INITIAL_INTERVAL_MS = 100;
         private const int PREVIEW_MIN_INTERVAL_MS = 20;
         private const int PREVIEW_BASE_RATE = 500;
-        private const int FRAME_NAME_MAX_LENGTH = 30;
-        private const int MIN_FRAMES_FOR_SAVE = 2;
+        private const int RUNNER_NAME_MAX_LENGTH = 30;
 
         private readonly CustomRunnerRepository repository;
         private readonly Action<string> onCustomRunnerDeleted;
@@ -206,7 +205,7 @@ namespace RunCat365
                 ForeColor = Palette.TextPrimary,
                 Font = new Font(fontFamily, 9F),
                 BorderStyle = BorderStyle.FixedSingle,
-                MaxLength = FRAME_NAME_MAX_LENGTH,
+                MaxLength = RUNNER_NAME_MAX_LENGTH,
                 Anchor = AnchorStyles.Left | AnchorStyles.Right,
                 Margin = new Padding(0, 0, 0, 8)
             };
@@ -761,7 +760,7 @@ namespace RunCat365
         {
             var name = nameTextBox.Text.Trim();
             bool hasValidName = !string.IsNullOrWhiteSpace(name);
-            bool hasValidFrames = pendingFrames.Count >= MIN_FRAMES_FOR_SAVE;
+            bool hasValidFrames = pendingFrames.Count >= CustomRunnerRepository.MIN_FRAME_COUNT;
 
             saveButton.Enabled = hasValidName && hasValidFrames;
 
@@ -783,7 +782,7 @@ namespace RunCat365
         {
             var name = nameTextBox.Text.Trim();
             if (string.IsNullOrWhiteSpace(name)) return;
-            if (pendingFrames.Count < MIN_FRAMES_FOR_SAVE) return;
+            if (pendingFrames.Count < CustomRunnerRepository.MIN_FRAME_COUNT) return;
 
             if (repository.Exists(name))
             {

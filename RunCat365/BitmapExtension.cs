@@ -18,12 +18,12 @@ namespace RunCat365
 {
     internal readonly ref struct BitmapLock
     {
-        private readonly Bitmap _bitmap;
+        private readonly Bitmap bitmap;
         internal BitmapData Data { get; }
 
         internal BitmapLock(Bitmap bitmap, ImageLockMode mode)
         {
-            _bitmap = bitmap;
+            this.bitmap = bitmap;
             Data = bitmap.LockBits(
                 new Rectangle(0, 0, bitmap.Width, bitmap.Height),
                 mode,
@@ -33,7 +33,7 @@ namespace RunCat365
 
         internal void Dispose()
         {
-            _bitmap.UnlockBits(Data);
+            bitmap.UnlockBits(Data);
         }
     }
 
