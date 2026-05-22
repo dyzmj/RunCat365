@@ -22,7 +22,7 @@ namespace RunCat365
 {
     internal class EndlessGameForm : Form
     {
-        private const int JUMP_THREDHOLD = 17;
+        private const int JUMP_THRESHOLD = 17;
         private readonly FormsTimer timer;
         private readonly Theme systemTheme;
         private GameStatus status = GameStatus.NewGame;
@@ -107,7 +107,7 @@ namespace RunCat365
 
         private void Initialize()
         {
-            counter = JUMP_THREDHOLD;
+            counter = JUMP_THRESHOLD;
             isJumpRequested = false;
             score = 0;
             cat = new Cat.Running(Cat.Running.Frame.Frame0);
@@ -203,7 +203,7 @@ namespace RunCat365
 
         private void AutoJump()
         {
-            if (isAutoPlay && roads[JUMP_THREDHOLD - 1] == Road.Sprout)
+            if (isAutoPlay && roads[JUMP_THRESHOLD - 1] == Road.Sprout)
             {
                 isJumpRequested = true;
             }

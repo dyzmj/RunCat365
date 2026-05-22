@@ -1,4 +1,4 @@
-// Copyright 2025 Takuto Nakamura
+﻿// Copyright 2025 Takuto Nakamura
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -12,8 +12,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-using System.Diagnostics;
 using RunCat365.Properties;
+using System.Diagnostics;
 
 namespace RunCat365
 {
@@ -42,56 +42,77 @@ namespace RunCat365
         }
     }
 
-    internal class GPURepository
+    internal class GPUPerformanceCounters
     {
-        private readonly List<PerformanceCounter> gpuCounters = [];
-        private readonly List<GPUInfo> gpuInfoList = [];
-        private const int GPU_INFO_LIST_LIMIT_SIZE = 5;
+        private const string CATEGORY_NAME = "GPU Engine";
+        private const string COUNTER_NAME = "Utilization Percentage";
+        private const string ENGINE_TYPE_FILTER = "engtype_3D";
 
-        internal bool IsAvailable { get; private set; } = true;
+        internal IReadOnlyList<PerformanceCounter> Counters { get; }
 
-        internal GPURepository()
+        private GPUPerformanceCounters(List<PerformanceCounter> counters)
         {
+            Counters = counters;
+        }
+
+        internal static GPUPerformanceCounters? TryCreate()
+        {
+            var counters = new List<PerformanceCounter>();
             try
             {
-                var category = new PerformanceCounterCategory("GPU Engine");
-                var instanceNames = category.GetInstanceNames();
-                var instances = instanceNames.Where(n => n.Contains("engtype_3D")).ToList();
-                if (instances.Count > 0)
-                {
-                    foreach (var instance in instances)
-                    {
-                        var counter = new PerformanceCounter("GPU Engine", "Utilization Percentage", instance);
-                        gpuCounters.Add(counter);
+                var category = new PerformanceCounterCategory(CATEGORY_NAME);
+                var instances = category.GetInstanceNames()
+                    .Where(n => n.Contains(ENGINE_TYPE_FILTER))
+                    .ToList();
+                if (instances.Count == 0) return null;
 
-                        // Discards first return value
-                        _ = counter.NextValue();
-                    }
-                }
-                else
+                foreach (var instance in instances)
                 {
-                    IsAvailable = false;
+                    var counter = new PerformanceCounter(CATEGORY_NAME, COUNTER_NAME, instance);
+                    counters.Add(counter);
+                    _ = counter.NextValue();
                 }
+                return new GPUPerformanceCounters(counters);
             }
             catch
             {
-                IsAvailable = false;
+                foreach (var counter in counters) counter.Close();
+                return null;
             }
+        }
+
+        internal void Close()
+        {
+            foreach (var counter in Counters) counter.Close();
+        }
+    }
+
+    internal class GPURepository
+    {
+        private const int GPU_INFO_LIST_LIMIT_SIZE = 5;
+
+        private readonly GPUPerformanceCounters? counters;
+        private readonly List<GPUInfo> gpuInfoList = [];
+
+        internal bool IsAvailable => counters is not null;
+
+        internal GPURepository()
+        {
+            counters = GPUPerformanceCounters.TryCreate();
         }
 
         internal void Update()
         {
-            if (!IsAvailable || gpuCounters.Count == 0) return;
+            if (counters is null) return;
             try
             {
-                var values = gpuCounters.Select(counter => counter.NextValue()).ToList();
-                var average = values.Count > 0 ? values.Average() : 0f;
-                var maximum = values.Count > 0 ? values.Max() : 0f;
+                var values = counters.Counters.Select(counter => counter.NextValue()).ToList();
+                if (values.Count == 0) return;
 
                 var gpuInfo = new GPUInfo
                 {
-                    Average = Math.Min(100, average),
-                    Maximum = Math.Min(100, maximum)
+                    Average = Math.Min(100, values.Average()),
+                    Maximum = Math.Min(100, values.Max())
                 };
 
                 gpuInfoList.Add(gpuInfo);
@@ -100,15 +121,19 @@ namespace RunCat365
                     gpuInfoList.RemoveAt(0);
                 }
             }
-            catch
+            catch (Exception exception) when (
+                exception is InvalidOperationException
+                or System.ComponentModel.Win32Exception
+                or UnauthorizedAccessException)
             {
-                IsAvailable = false;
+                Debug.WriteLine($"GPURepository.Update failed: {exception.Message}");
+                gpuInfoList.Clear();
             }
         }
 
         internal GPUInfo? Get()
         {
-            if (!IsAvailable || gpuInfoList.Count == 0) return null;
+            if (counters is null || gpuInfoList.Count == 0) return null;
 
             return new GPUInfo
             {
@@ -119,10 +144,7 @@ namespace RunCat365
 
         internal void Close()
         {
-            foreach (var counter in gpuCounters)
-            {
-                counter.Close();
-            }
+            counters?.Close();
         }
     }
 }

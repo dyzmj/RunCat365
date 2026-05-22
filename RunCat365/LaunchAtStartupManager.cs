@@ -20,7 +20,7 @@ namespace RunCat365
     internal interface ILaunchAtStartupManager
     {
         bool GetEnabled();
-        bool SetEnabled(bool enabled);
+        bool Toggle(bool currentlyEnabled);
     }
 
     internal sealed class PackagedLaunchAtStartupManager : ILaunchAtStartupManager
@@ -35,10 +35,10 @@ namespace RunCat365
             return false;
         }
 
-        public bool SetEnabled(bool enabled)
+        public bool Toggle(bool currentlyEnabled)
         {
             startupTask ??= Task.Run(async () => await StartupTask.GetAsync("RunCatStartup")).Result;
-            if (enabled)
+            if (currentlyEnabled)
             {
                 if (startupTask.State == StartupTaskState.Enabled) startupTask.Disable();
                 return true;
@@ -82,14 +82,14 @@ namespace RunCat365
             return value;
         }
 
-        public bool SetEnabled(bool enabled)
+        public bool Toggle(bool currentlyEnabled)
         {
             var productName = Application.ProductName;
             if (productName is null) return false;
             var keyName = @"Software\Microsoft\Windows\CurrentVersion\Run";
             using var rKey = Registry.CurrentUser.OpenSubKey(keyName, true);
             if (rKey is null) return false;
-            if (enabled)
+            if (currentlyEnabled)
             {
                 rKey.DeleteValue(productName, false);
             }
@@ -108,18 +108,18 @@ namespace RunCat365
 
     internal class LaunchAtStartupManager
     {
-        private readonly ILaunchAtStartupManager _launchAtStartupManager;
+        private readonly ILaunchAtStartupManager launchAtStartupManager;
 
         public LaunchAtStartupManager()
         {
-            _launchAtStartupManager = IsRunningAsPackaged()
+            launchAtStartupManager = IsRunningAsPackaged()
                 ? new PackagedLaunchAtStartupManager()
                 : new UnpackagedLaunchAtStartupManager();
         }
 
-        public bool GetStartup() => _launchAtStartupManager.GetEnabled();
+        public bool GetStartup() => launchAtStartupManager.GetEnabled();
 
-        public bool SetStartup(bool enabled) => _launchAtStartupManager.SetEnabled(enabled);
+        public bool ToggleStartup(bool currentlyEnabled) => launchAtStartupManager.Toggle(currentlyEnabled);
 
         private static bool IsRunningAsPackaged()
         {

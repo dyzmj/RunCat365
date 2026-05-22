@@ -42,16 +42,18 @@ namespace RunCat365
 
     internal class NetworkRepository
     {
-        private readonly NetworkInterface networkInterface;
+        private readonly NetworkInterface? networkInterface;
         private long lastSent;
         private long lastReceived;
         private DateTime lastUpdate;
-        private NetworkInfo networkInfo;
+        private NetworkInfo? networkInfo;
+
+        internal bool IsAvailable => networkInterface is not null;
 
         internal NetworkRepository()
         {
-            networkInterface = GetActiveNetworkInterface()
-                ?? throw new InvalidOperationException("No valid network interface found.");
+            networkInterface = GetActiveNetworkInterface();
+            if (networkInterface is null) return;
             var stats = networkInterface.GetIPStatistics();
             lastSent = stats.BytesSent;
             lastReceived = stats.BytesReceived;
@@ -60,8 +62,15 @@ namespace RunCat365
 
         private static NetworkInterface? GetActiveNetworkInterface()
         {
-            var interfaces = NetworkInterface.GetAllNetworkInterfaces();
-            return interfaces.FirstOrDefault(IsValidNetworkInterface);
+            try
+            {
+                var interfaces = NetworkInterface.GetAllNetworkInterfaces();
+                return interfaces.FirstOrDefault(IsValidNetworkInterface);
+            }
+            catch (NetworkInformationException)
+            {
+                return null;
+            }
         }
 
         private static bool IsValidNetworkInterface(NetworkInterface networkInterface)
@@ -81,22 +90,32 @@ namespace RunCat365
 
         internal void Update()
         {
-            var stats = networkInterface.GetIPStatistics();
-            var now = DateTime.UtcNow;
-            var elapsedSec = (now - lastUpdate).TotalSeconds;
-            if (elapsedSec > 0)
+            if (networkInterface is null) return;
+            try
             {
-                networkInfo.SentSpeed = (float)((stats.BytesSent - lastSent) / elapsedSec);
-                networkInfo.ReceivedSpeed = (float)((stats.BytesReceived - lastReceived) / elapsedSec);
+                var stats = networkInterface.GetIPStatistics();
+                var now = DateTime.UtcNow;
+                var elapsedSec = (now - lastUpdate).TotalSeconds;
+                if (elapsedSec > 0)
+                {
+                    networkInfo = new NetworkInfo
+                    {
+                        SentSpeed = (float)((stats.BytesSent - lastSent) / elapsedSec),
+                        ReceivedSpeed = (float)((stats.BytesReceived - lastReceived) / elapsedSec)
+                    };
+                }
+                lastSent = stats.BytesSent;
+                lastReceived = stats.BytesReceived;
+                lastUpdate = now;
             }
-            lastSent = stats.BytesSent;
-            lastReceived = stats.BytesReceived;
-            lastUpdate = now;
+            catch (NetworkInformationException)
+            {
+                networkInfo = null;
+            }
         }
 
-        internal NetworkInfo Get()
+        internal NetworkInfo? Get()
         {
-            Update();
             return networkInfo;
         }
     }

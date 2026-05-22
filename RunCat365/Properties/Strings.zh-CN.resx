@@ -138,8 +138,8 @@
   <data name="Menu_Information" xml:space="preserve">
     <value>信息</value>
   </data>
-  <data name="Menu_OpenRepository" xml:space="preserve">
-    <value>打开存储库</value>
+  <data name="Menu_OpenProjectPage" xml:space="preserve">
+    <value>打开项目页面</value>
   </data>
   <data name="Menu_Exit" xml:space="preserve">
     <value>退出</value>
@@ -250,7 +250,7 @@
     <value>自定义跑步者</value>
   </data>
   <data name="CustomRunner_AddedRunners" xml:space="preserve">
-    <value>已添加的跑步者:</value>
+    <value>自定义跑步者:</value>
   </data>
   <data name="CustomRunner_Name" xml:space="preserve">
     <value>跑步者名称:</value>
@@ -258,17 +258,8 @@
   <data name="CustomRunner_AddFrames" xml:space="preserve">
     <value>添加帧...</value>
   </data>
-  <data name="CustomRunner_ClearFrames" xml:space="preserve">
-    <value>清除</value>
-  </data>
   <data name="CustomRunner_RemoveFrame" xml:space="preserve">
     <value>删除帧</value>
-  </data>
-  <data name="CustomRunner_MoveFrameUp" xml:space="preserve">
-    <value>上移</value>
-  </data>
-  <data name="CustomRunner_MoveFrameDown" xml:space="preserve">
-    <value>下移</value>
   </data>
   <data name="CustomRunner_Save" xml:space="preserve">
     <value>保存</value>
@@ -279,20 +270,17 @@
   <data name="CustomRunner_Requirements" xml:space="preserve">
     <value>格式: PNG | 最大尺寸: 32x32px</value>
   </data>
-  <data name="CustomRunner_ErrorEmptyName" xml:space="preserve">
-    <value>请输入跑步者名称。</value>
-  </data>
-  <data name="CustomRunner_ErrorMinFrames" xml:space="preserve">
-    <value>请至少添加2帧。</value>
-  </data>
   <data name="CustomRunner_ConfirmOverwrite" xml:space="preserve">
     <value>同名跑步者已存在。是否覆盖？</value>
   </data>
   <data name="CustomRunner_ConfirmDelete" xml:space="preserve">
     <value>删除跑步者"{0}"？</value>
   </data>
-  <data name="CustomRunner_OverwriteWarning" xml:space="preserve">
-    <value>⚠️ 同名跑步者已存在。保存将覆盖。</value>
+  <data name="CustomRunner_RequirementsLabel" xml:space="preserve">
+    <value>要求:</value>
+  </data>
+  <data name="CustomRunner_FramesLabel" xml:space="preserve">
+    <value>帧:</value>
   </data>
   <data name="CustomRunner_Preview" xml:space="preserve">
     <value>预览:</value>

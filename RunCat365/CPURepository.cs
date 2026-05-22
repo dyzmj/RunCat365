@@ -58,8 +58,6 @@ namespace RunCat365
             User = new PerformanceCounter("Processor", "% User Time", "_Total");
             Kernel = new PerformanceCounter("Processor", "% Privileged Time", "_Total");
             Idle = new PerformanceCounter("Processor", "% Idle Time", "_Total");
-
-            // Discards first return value
             _ = Total.NextValue();
             _ = User.NextValue();
             _ = Kernel.NextValue();

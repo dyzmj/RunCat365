@@ -33,7 +33,6 @@ namespace RunCat365
             CultureInfo.CurrentUICulture = defaultCultureInfo;
             CultureInfo.CurrentCulture = defaultCultureInfo;
 
-            // Terminate RunCat365 if there's any existing instance.
             using var procMutex = new Mutex(true, "_RUNCAT_MUTEX", out var result);
             if (!result) return;
 
@@ -72,6 +71,7 @@ namespace RunCat365
         private SpeedSource speedSource = SpeedSource.CPU;
         private string? customRunnerName;
         private int fetchCounter = 5;
+        private bool isFetching;
 
         public RunCat365ApplicationContext()
         {
@@ -100,6 +100,10 @@ namespace RunCat365
             contextMenuManager = new ContextMenuManager(
                 () => runner,
                 r => ChangeRunner(r),
+                customRunnerRepository,
+                () => customRunnerName,
+                name => ApplyCustomRunner(name),
+                deletedName => HandleCustomRunnerDeleted(deletedName),
                 () => GetSystemTheme(),
                 () => manualTheme,
                 t => ChangeManualTheme(t),
@@ -109,13 +113,9 @@ namespace RunCat365
                 () => fpsMaxLimit,
                 f => ChangeFPSMaxLimit(f),
                 () => launchAtStartupManager.GetStartup(),
-                s => launchAtStartupManager.SetStartup(s),
-                () => OpenRepository(),
-                () => Application.Exit(),
-                customRunnerRepository,
-                () => customRunnerName,
-                name => ApplyCustomRunner(name),
-                deletedName => HandleCustomRunnerDeleted(deletedName)
+                s => launchAtStartupManager.ToggleStartup(s),
+                () => OpenProjectPage(),
+                () => Application.Exit()
             );
 
             if (customRunnerName is not null)
@@ -185,27 +185,25 @@ namespace RunCat365
 
         private void UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
         {
-            if (e.Category == UserPreferenceCategory.General)
+            if (e.Category != UserPreferenceCategory.General) return;
+            var systemTheme = GetSystemTheme();
+            if (contextMenuManager.HasActiveCustomIcons)
             {
-                var systemTheme = GetSystemTheme();
-                if (customRunnerName is not null)
-                {
-                    ApplyCustomRunner(customRunnerName);
-                }
-                else
-                {
-                    contextMenuManager.SetIcons(systemTheme, manualTheme, runner);
-                }
+                contextMenuManager.RecolorActiveCustomIcons(systemTheme, manualTheme);
+            }
+            else
+            {
+                contextMenuManager.SetIcons(systemTheme, manualTheme, runner);
             }
         }
 
-        private static void OpenRepository()
+        private static void OpenProjectPage()
         {
             try
             {
                 Process.Start(new ProcessStartInfo()
                 {
-                    FileName = "https://github.com/runcat-dev/RunCat365.git",
+                    FileName = "https://github.com/runcat-dev/RunCat365",
                     UseShellExecute = true
                 });
             }
@@ -325,24 +323,50 @@ namespace RunCat365
                 systemInfoValues.AddRange(temperatureInfo.Value.GenerateIndicator());
             }
             systemInfoValues.AddRange(storageInfo.GenerateIndicator());
-            systemInfoValues.AddRange(networkInfo.GenerateIndicator());
+            if (networkInfo.HasValue)
+            {
+                systemInfoValues.AddRange(networkInfo.Value.GenerateIndicator());
+            }
             contextMenuManager.SetSystemInfoMenuText(string.Join("\n", [.. systemInfoValues]));
 
             return CalculateInterval(cpuInfo, gpuInfo, memoryInfo);
         }
 
-        private void FetchTick(object? state, EventArgs e)
+        private async void FetchTick(object? sender, EventArgs e)
         {
-            cpuRepository.Update();
-            gpuRepository.Update();
-            fetchCounter += 1;
-            if (fetchCounter < FETCH_COUNTER_SIZE) return;
-            fetchCounter = 0;
-            temperatureRepository.Update();
-            var interval = FetchSystemInfo();
-            animateTimer.Stop();
-            animateTimer.Interval = interval;
-            animateTimer.Start();
+            if (isFetching) return;
+            isFetching = true;
+            try
+            {
+                var doHeavySlice = await Task.Run(() =>
+                {
+                    cpuRepository.Update();
+                    gpuRepository.Update();
+                    fetchCounter += 1;
+                    if (fetchCounter < FETCH_COUNTER_SIZE) return false;
+                    fetchCounter = 0;
+                    temperatureRepository.Update();
+                    memoryRepository.Update();
+                    storageRepository.Update();
+                    networkRepository.Update();
+                    return true;
+                });
+
+                if (!doHeavySlice) return;
+
+                var interval = FetchSystemInfo();
+                animateTimer.Stop();
+                animateTimer.Interval = interval;
+                animateTimer.Start();
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine($"FetchTick failed: {exception.Message}");
+            }
+            finally
+            {
+                isFetching = false;
+            }
         }
 
         protected override void Dispose(bool disposing)

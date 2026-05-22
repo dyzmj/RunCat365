@@ -138,8 +138,8 @@
   <data name="Menu_Information" xml:space="preserve">
     <value>Información</value>
   </data>
-  <data name="Menu_OpenRepository" xml:space="preserve">
-    <value>Abrir Repositorio</value>
+  <data name="Menu_OpenProjectPage" xml:space="preserve">
+    <value>Abrir página del proyecto</value>
   </data>
   <data name="Menu_Exit" xml:space="preserve">
     <value>Salir</value>
@@ -250,7 +250,7 @@
     <value>Runners personalizados</value>
   </data>
   <data name="CustomRunner_AddedRunners" xml:space="preserve">
-    <value>Runners añadidos:</value>
+    <value>Runners personalizados:</value>
   </data>
   <data name="CustomRunner_Name" xml:space="preserve">
     <value>Nombre del runner:</value>
@@ -258,17 +258,8 @@
   <data name="CustomRunner_AddFrames" xml:space="preserve">
     <value>Añadir fotogramas...</value>
   </data>
-  <data name="CustomRunner_ClearFrames" xml:space="preserve">
-    <value>Limpiar</value>
-  </data>
   <data name="CustomRunner_RemoveFrame" xml:space="preserve">
     <value>Eliminar fotograma</value>
-  </data>
-  <data name="CustomRunner_MoveFrameUp" xml:space="preserve">
-    <value>Subir</value>
-  </data>
-  <data name="CustomRunner_MoveFrameDown" xml:space="preserve">
-    <value>Bajar</value>
   </data>
   <data name="CustomRunner_Save" xml:space="preserve">
     <value>Guardar</value>
@@ -279,20 +270,17 @@
   <data name="CustomRunner_Requirements" xml:space="preserve">
     <value>Formato: PNG | Dimensiones máx: 32x32px</value>
   </data>
-  <data name="CustomRunner_ErrorEmptyName" xml:space="preserve">
-    <value>Por favor, introduzca un nombre de runner.</value>
-  </data>
-  <data name="CustomRunner_ErrorMinFrames" xml:space="preserve">
-    <value>Por favor, añada al menos 2 fotogramas.</value>
-  </data>
   <data name="CustomRunner_ConfirmOverwrite" xml:space="preserve">
     <value>Ya existe un runner con este nombre. ¿Sobrescribir?</value>
   </data>
   <data name="CustomRunner_ConfirmDelete" xml:space="preserve">
     <value>¿Eliminar runner "{0}"?</value>
   </data>
-  <data name="CustomRunner_OverwriteWarning" xml:space="preserve">
-    <value>⚠️ El perfil existe. Se sobrescribirá al guardar.</value>
+  <data name="CustomRunner_RequirementsLabel" xml:space="preserve">
+    <value>Requisitos:</value>
+  </data>
+  <data name="CustomRunner_FramesLabel" xml:space="preserve">
+    <value>Fotogramas:</value>
   </data>
   <data name="CustomRunner_Preview" xml:space="preserve">
     <value>Vista previa:</value>

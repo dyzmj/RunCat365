@@ -138,8 +138,8 @@
   <data name="Menu_Information" xml:space="preserve">
     <value>Information</value>
   </data>
-  <data name="Menu_OpenRepository" xml:space="preserve">
-    <value>Open Repository</value>
+  <data name="Menu_OpenProjectPage" xml:space="preserve">
+    <value>Open Project Page</value>
   </data>
   <data name="Menu_Exit" xml:space="preserve">
     <value>Exit</value>
@@ -258,17 +258,8 @@
   <data name="CustomRunner_AddFrames" xml:space="preserve">
     <value>Add Frames...</value>
   </data>
-  <data name="CustomRunner_ClearFrames" xml:space="preserve">
-    <value>Clear</value>
-  </data>
   <data name="CustomRunner_RemoveFrame" xml:space="preserve">
     <value>Remove Frame</value>
-  </data>
-  <data name="CustomRunner_MoveFrameUp" xml:space="preserve">
-    <value>Up</value>
-  </data>
-  <data name="CustomRunner_MoveFrameDown" xml:space="preserve">
-    <value>Down</value>
   </data>
   <data name="CustomRunner_Save" xml:space="preserve">
     <value>Save</value>
@@ -279,20 +270,17 @@
   <data name="CustomRunner_Requirements" xml:space="preserve">
     <value>Format: PNG | Max Dimensions: 32x32px</value>
   </data>
-  <data name="CustomRunner_ErrorEmptyName" xml:space="preserve">
-    <value>Please enter a runner name.</value>
-  </data>
-  <data name="CustomRunner_ErrorMinFrames" xml:space="preserve">
-    <value>Please add at least 2 frames.</value>
-  </data>
   <data name="CustomRunner_ConfirmOverwrite" xml:space="preserve">
     <value>A runner with this name already exists. Overwrite?</value>
   </data>
   <data name="CustomRunner_ConfirmDelete" xml:space="preserve">
     <value>Delete runner "{0}"?</value>
   </data>
-  <data name="CustomRunner_OverwriteWarning" xml:space="preserve">
-    <value>⚠️ Profile exists. Saving will overwrite.</value>
+  <data name="CustomRunner_RequirementsLabel" xml:space="preserve">
+    <value>Requirements:</value>
+  </data>
+  <data name="CustomRunner_FramesLabel" xml:space="preserve">
+    <value>Frames:</value>
   </data>
   <data name="CustomRunner_Preview" xml:space="preserve">
     <value>Preview:</value>
