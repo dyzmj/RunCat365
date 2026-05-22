@@ -12,9 +12,9 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+using RunCat365.Properties;
 using System.Diagnostics;
 using System.Globalization;
-using RunCat365.Properties;
 
 namespace RunCat365
 {
@@ -155,7 +155,7 @@ namespace RunCat365
                 or System.ComponentModel.Win32Exception
                 or UnauthorizedAccessException)
             {
-                System.Diagnostics.Debug.WriteLine($"TemperatureRepository.Update failed: {exception.Message}");
+                Debug.WriteLine($"TemperatureRepository.Update failed: {exception.Message}");
                 temperatureInfo = null;
             }
         }

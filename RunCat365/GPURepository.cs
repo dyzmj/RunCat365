@@ -12,8 +12,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-using System.Diagnostics;
 using RunCat365.Properties;
+using System.Diagnostics;
 
 namespace RunCat365
 {
@@ -126,7 +126,7 @@ namespace RunCat365
                 or System.ComponentModel.Win32Exception
                 or UnauthorizedAccessException)
             {
-                System.Diagnostics.Debug.WriteLine($"GPURepository.Update failed: {exception.Message}");
+                Debug.WriteLine($"GPURepository.Update failed: {exception.Message}");
                 gpuInfoList.Clear();
             }
         }

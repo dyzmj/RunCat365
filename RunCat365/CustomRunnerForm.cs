@@ -13,7 +13,7 @@
 //    limitations under the License.
 
 using RunCat365.Properties;
-using FormsTimer = System.Windows.Forms.Timer;
+using System.Diagnostics;
 
 namespace RunCat365
 {
@@ -574,7 +574,7 @@ namespace RunCat365
                 }
                 catch (Exception ex) when (ex is OutOfMemoryException or ArgumentException or FileNotFoundException)
                 {
-                    System.Diagnostics.Debug.WriteLine($"Failed to load frame '{file}': {ex.Message}");
+                    Debug.WriteLine($"Failed to load frame '{file}': {ex.Message}");
                 }
             }
             OnFramesChanged();

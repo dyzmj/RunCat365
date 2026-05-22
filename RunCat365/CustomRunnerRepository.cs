@@ -12,6 +12,7 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Text.Json;
@@ -85,7 +86,7 @@ namespace RunCat365
             }
             catch (Exception ex) when (ex is ArgumentException or OutOfMemoryException or FileNotFoundException)
             {
-                System.Diagnostics.Debug.WriteLine($"Failed to load custom runner frame '{filePath}': {ex.Message}");
+                Debug.WriteLine($"Failed to load custom runner frame '{filePath}': {ex.Message}");
                 return null;
             }
         }
@@ -135,7 +136,7 @@ namespace RunCat365
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
-                System.Diagnostics.Debug.WriteLine($"Failed to delete runner directory '{runnerDirectory}': {ex.Message}");
+                Debug.WriteLine($"Failed to delete runner directory '{runnerDirectory}': {ex.Message}");
             }
 
             profiles.Remove(profile);
@@ -163,7 +164,7 @@ namespace RunCat365
             }
             catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException)
             {
-                System.Diagnostics.Debug.WriteLine($"Failed to load custom runner profiles: {ex.Message}");
+                Debug.WriteLine($"Failed to load custom runner profiles: {ex.Message}");
                 profiles = [];
             }
         }
@@ -180,7 +181,7 @@ namespace RunCat365
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
-                System.Diagnostics.Debug.WriteLine($"Failed to write custom runner profiles: {ex.Message}");
+                Debug.WriteLine($"Failed to write custom runner profiles: {ex.Message}");
                 return false;
             }
         }
@@ -197,7 +198,7 @@ namespace RunCat365
                 }
                 catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
                 {
-                    System.Diagnostics.Debug.WriteLine($"Failed to delete frame file '{filePath}': {ex.Message}");
+                    Debug.WriteLine($"Failed to delete frame file '{filePath}': {ex.Message}");
                 }
             }
         }
