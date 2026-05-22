@@ -203,7 +203,7 @@ namespace RunCat365
             {
                 Process.Start(new ProcessStartInfo()
                 {
-                    FileName = "https://github.com/runcat-dev/RunCat365.git",
+                    FileName = "https://github.com/runcat-dev/RunCat365",
                     UseShellExecute = true
                 });
             }
@@ -358,6 +358,10 @@ namespace RunCat365
                 animateTimer.Stop();
                 animateTimer.Interval = interval;
                 animateTimer.Start();
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine($"FetchTick failed: {exception.Message}");
             }
             finally
             {

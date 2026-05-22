@@ -121,8 +121,12 @@ namespace RunCat365
                     gpuInfoList.RemoveAt(0);
                 }
             }
-            catch (InvalidOperationException)
+            catch (Exception exception) when (
+                exception is InvalidOperationException
+                or System.ComponentModel.Win32Exception
+                or UnauthorizedAccessException)
             {
+                System.Diagnostics.Debug.WriteLine($"GPURepository.Update failed: {exception.Message}");
                 gpuInfoList.Clear();
             }
         }

@@ -725,7 +725,7 @@ namespace RunCat365
         private void FramePanelDragDrop(object? sender, DragEventArgs e)
         {
             if (e.Data?.GetData(typeof(int)) is not int sourceIndex) return;
-            ReorderFrame(sourceIndex, pendingFrames.Count - 1);
+            ReorderFrame(sourceIndex, pendingFrames.Count);
         }
 
         private void ReorderFrame(int sourceIndex, int targetIndex)

@@ -150,8 +150,12 @@ namespace RunCat365
                         MaximumCelsius = temperaturesCelsius.Max()
                     };
             }
-            catch (InvalidOperationException)
+            catch (Exception exception) when (
+                exception is InvalidOperationException
+                or System.ComponentModel.Win32Exception
+                or UnauthorizedAccessException)
             {
+                System.Diagnostics.Debug.WriteLine($"TemperatureRepository.Update failed: {exception.Message}");
                 temperatureInfo = null;
             }
         }
