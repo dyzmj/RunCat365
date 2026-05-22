@@ -1,0 +1,8 @@
+root = true
+
+[*.cs]
+# FlatTrackBar is instantiated only from code, never placed on the WinForms designer,
+# so designer-serialization metadata is unnecessary on its properties.
+
+[FlatTrackBar.cs]
+dotnet_diagnostic.WFO1000.severity = none
