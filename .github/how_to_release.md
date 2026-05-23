@@ -22,7 +22,7 @@ Version numbers must be updated in **two** locations:
 2. Select **Publish** > **Create App Packages**
 3. Choose **Microsoft Store as MSIX package** and sign in with your Microsoft account
 4. Select the existing app "RunCat 365"
-5. Configure package settings (x64, arm64, etc.)
+5. Configure package settings (x86, x64, arm64)
 6. Generate the `.msixupload` file
 
 ## 4. Submit to Partner Center

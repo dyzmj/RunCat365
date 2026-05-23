@@ -21,9 +21,11 @@
 
 <img src="./docs/images/demo.gif" width="600" height="200" alt="demo" />
 <br/>
-<img src="./docs/images/overview.png" width="600" height="343" alt="overview" />
+<img src="./docs/images/overview.png" width="600" height="600" alt="overview" />
 <br/>
-<img src="./docs/images/endless_game.png" width="600" height="343" alt="endless game" />
+<img src="./docs/images/custom_runner.png" width="600" height="467" alt="overview" />
+<br/>
+<img src="./docs/images/endless_game.png" width="600" height="375" alt="endless game" />
 
 ## Installation
 
@@ -47,7 +49,7 @@ We welcome anyone interested in contributing to RunCat.
 However, please note that this is a place for discussing features, not for submitting requests.
 For requests, please create an Issue according to the template.
 
-Portal: https://runcat-dev.github.io
+Portal: https://runcat-dev.github.io  
 Discord: https://discord.gg/wja3mmHt9z
 
 ## Contributors

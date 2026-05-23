@@ -70,6 +70,18 @@ p.feature {
   font-size: 1em;
 }
 
+ul.feature-list {
+  display: inline-block;
+  list-style: disc inside;
+  padding: 0;
+  margin: 0 auto 1em;
+  text-align: left;
+}
+
+ul.feature-list li {
+  padding: 2px 0;
+}
+
 img.demo {
   width: 600px;
   height: 200px;
@@ -85,8 +97,9 @@ p.microsoft-store-banner img:active {
 }
 
 img.screenshot {
-  width: 600px;
-  height: 343px;
+  width: 100%;
+  max-width: 600px;
+  height: auto;
 }
 
 footer {
