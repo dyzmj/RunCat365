@@ -220,10 +220,10 @@
     <value>네트워크</value>
   </data>
   <data name="SystemInfo_Sent" xml:space="preserve">
-    <value>보냄</value>
+    <value>업로드</value>
   </data>
   <data name="SystemInfo_Received" xml:space="preserve">
-    <value>받음</value>
+    <value>다운로드</value>
   </data>
   <data name="Message_CPUUsageUnavailable" xml:space="preserve">
     <value>CPU 사용량을 가져오지 못했습니다. 러너의 달리기 속도를 갱신할 수 없습니다.</value>
