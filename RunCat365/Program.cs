@@ -67,6 +67,7 @@ namespace RunCat365
         private readonly FormsTimer animateTimer;
         private Runner runner = Runner.Cat;
         private Theme manualTheme = Theme.System;
+        private TemperatureUnit temperatureUnit = TemperatureUnit.System;
         private FPSMaxLimit fpsMaxLimit = FPSMaxLimit.FPS40;
         private SpeedSource speedSource = SpeedSource.CPU;
         private string? customRunnerName;
@@ -78,6 +79,7 @@ namespace RunCat365
             UserSettings.Default.Reload();
             _ = Enum.TryParse(UserSettings.Default.Runner, out runner);
             _ = Enum.TryParse(UserSettings.Default.Theme, out manualTheme);
+            _ = Enum.TryParse(UserSettings.Default.TemperatureUnit, out temperatureUnit);
             _ = Enum.TryParse(UserSettings.Default.FPSMaxLimit, out fpsMaxLimit);
             _ = Enum.TryParse(UserSettings.Default.SpeedSource, out speedSource);
             customRunnerName = string.IsNullOrEmpty(UserSettings.Default.CustomRunnerName)
@@ -112,6 +114,8 @@ namespace RunCat365
                 s => IsSpeedSourceAvailable(s),
                 () => fpsMaxLimit,
                 f => ChangeFPSMaxLimit(f),
+                () => temperatureUnit,
+                u => ChangeTemperatureUnit(u),
                 () => launchAtStartupManager.GetStartup(),
                 s => launchAtStartupManager.ToggleStartup(s),
                 () => OpenProjectPage(),
@@ -254,6 +258,13 @@ namespace RunCat365
             UserSettings.Default.Save();
         }
 
+        private void ChangeTemperatureUnit(TemperatureUnit u)
+        {
+            temperatureUnit = u;
+            UserSettings.Default.TemperatureUnit = temperatureUnit.ToString();
+            UserSettings.Default.Save();
+        }
+
         private void ChangeSpeedSource(SpeedSource s)
         {
             speedSource = s;
@@ -283,7 +294,7 @@ namespace RunCat365
                 _ => "",
             };
 
-            var temperatureDescription = temperatureInfo?.GetDescription(TemperatureUnit.System) ?? "";
+            var temperatureDescription = temperatureInfo?.GetDescription(temperatureUnit) ?? "";
             return string.IsNullOrEmpty(temperatureDescription) ? baseDescription : $"{baseDescription}\n{temperatureDescription}";
         }
 
@@ -320,7 +331,7 @@ namespace RunCat365
             systemInfoValues.AddRange(memoryInfo.GenerateIndicator());
             if (temperatureInfo.HasValue)
             {
-                systemInfoValues.AddRange(temperatureInfo.Value.GenerateIndicator(TemperatureUnit.System));
+                systemInfoValues.AddRange(temperatureInfo.Value.GenerateIndicator(temperatureUnit));
             }
             systemInfoValues.AddRange(storageInfo.GenerateIndicator());
             if (networkInfo.HasValue)

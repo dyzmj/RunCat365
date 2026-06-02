@@ -43,6 +43,8 @@ namespace RunCat365
             Func<SpeedSource, bool> isSpeedSourceAvailable,
             Func<FPSMaxLimit> getFPSMaxLimit,
             Action<FPSMaxLimit> setFPSMaxLimit,
+            Func<TemperatureUnit> getTemperatureUnit,
+            Action<TemperatureUnit> setTemperatureUnit,
             Func<bool> getLaunchAtStartup,
             Func<bool, bool> toggleLaunchAtStartup,
             Action openProjectPage,
@@ -127,6 +129,22 @@ namespace RunCat365
                 _ => null
             );
 
+            var temperatureUnitMenu = new CustomToolStripMenuItem(Strings.Menu_TemperatureUnit);
+            temperatureUnitMenu.SetupSubMenusFromEnum<TemperatureUnit>(
+                u => u.GetLocalizedString(),
+                (parent, sender, e) =>
+                {
+                    HandleMenuItemSelection<TemperatureUnit>(
+                        parent,
+                        sender,
+                        (string? s, out TemperatureUnit u) => Enum.TryParse(s, out u),
+                        u => setTemperatureUnit(u)
+                    );
+                },
+                u => getTemperatureUnit() == u,
+                _ => null
+            );
+
             var launchAtStartupMenu = new CustomToolStripMenuItem(Strings.Menu_LaunchAtStartup)
             {
                 Checked = getLaunchAtStartup()
@@ -138,6 +156,7 @@ namespace RunCat365
                 themeMenu,
                 speedSourceMenu,
                 fpsMaxLimitMenu,
+                temperatureUnitMenu,
                 launchAtStartupMenu
             );
 
