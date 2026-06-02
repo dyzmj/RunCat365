@@ -283,7 +283,7 @@ namespace RunCat365
                 _ => "",
             };
 
-            var temperatureDescription = temperatureInfo?.GetDescription() ?? "";
+            var temperatureDescription = temperatureInfo?.GetDescription(TemperatureUnit.System) ?? "";
             return string.IsNullOrEmpty(temperatureDescription) ? baseDescription : $"{baseDescription}\n{temperatureDescription}";
         }
 
@@ -320,7 +320,7 @@ namespace RunCat365
             systemInfoValues.AddRange(memoryInfo.GenerateIndicator());
             if (temperatureInfo.HasValue)
             {
-                systemInfoValues.AddRange(temperatureInfo.Value.GenerateIndicator());
+                systemInfoValues.AddRange(temperatureInfo.Value.GenerateIndicator(TemperatureUnit.System));
             }
             systemInfoValues.AddRange(storageInfo.GenerateIndicator());
             if (networkInfo.HasValue)
