@@ -503,5 +503,29 @@ namespace RunCat365.Properties {
                 return ResourceManager.GetString("CustomRunner_PreviewSpeed", resourceCulture);
             }
         }
+
+        internal static string Menu_TemperatureUnit {
+            get {
+                return ResourceManager.GetString("Menu_TemperatureUnit", resourceCulture);
+            }
+        }
+
+        internal static string TemperatureUnit_System {
+            get {
+                return ResourceManager.GetString("TemperatureUnit_System", resourceCulture);
+            }
+        }
+
+        internal static string TemperatureUnit_Celsius {
+            get {
+                return ResourceManager.GetString("TemperatureUnit_Celsius", resourceCulture);
+            }
+        }
+
+        internal static string TemperatureUnit_Fahrenheit {
+            get {
+                return ResourceManager.GetString("TemperatureUnit_Fahrenheit", resourceCulture);
+            }
+        }
     }
 }
