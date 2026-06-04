@@ -28,17 +28,6 @@ namespace RunCat365
     {
         private static readonly TemperatureUnit systemDefault = DetectSystemDefault();
 
-        internal static string GetString(this TemperatureUnit unit)
-        {
-            return unit switch
-            {
-                TemperatureUnit.System => "System",
-                TemperatureUnit.Celsius => "Celsius",
-                TemperatureUnit.Fahrenheit => "Fahrenheit",
-                _ => "",
-            };
-        }
-
         internal static string GetLocalizedString(this TemperatureUnit unit)
         {
             return unit switch
