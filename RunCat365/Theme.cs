@@ -25,17 +25,6 @@ namespace RunCat365
 
     internal static class ThemeExtension
     {
-        internal static string GetString(this Theme theme)
-        {
-            return theme switch
-            {
-                Theme.System => "System",
-                Theme.Light => "Light",
-                Theme.Dark => "Dark",
-                _ => "",
-            };
-        }
-
         internal static string GetLocalizedString(this Theme theme)
         {
             return theme switch
