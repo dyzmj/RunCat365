@@ -29,43 +29,32 @@ namespace RunCat365
         private const float CELSIUS_TO_FAHRENHEIT_SCALE = 9.0f / 5.0f;
         private const float CELSIUS_TO_FAHRENHEIT_OFFSET = 32.0f;
 
-        private static readonly bool usesFahrenheit = UsesFahrenheit();
-
-        internal static string GetDescription(this TemperatureInfo temperatureInfo)
+        internal static string GetDescription(this TemperatureInfo temperatureInfo, TemperatureUnit unit)
         {
-            return $"{Strings.SystemInfo_Temperature}: {temperatureInfo.MaximumCelsius.ToLocalizedTemperatureText()}";
+            var resolvedUnit = unit.Resolve();
+            return $"{Strings.SystemInfo_Temperature}: {temperatureInfo.MaximumCelsius.ToLocalizedTemperatureText(resolvedUnit)}";
         }
 
-        internal static List<string> GenerateIndicator(this TemperatureInfo temperatureInfo)
+        internal static List<string> GenerateIndicator(this TemperatureInfo temperatureInfo, TemperatureUnit unit)
         {
+            var resolvedUnit = unit.Resolve();
             return [
                 TreeFormatter.CreateRoot($"{Strings.SystemInfo_Temperature}:"),
-                TreeFormatter.CreateNode($"{Strings.SystemInfo_Average}: {temperatureInfo.AverageCelsius.ToLocalizedTemperatureText()}", false),
-                TreeFormatter.CreateNode($"{Strings.SystemInfo_Maximum}: {temperatureInfo.MaximumCelsius.ToLocalizedTemperatureText()}", true)
+                TreeFormatter.CreateNode($"{Strings.SystemInfo_Average}: {temperatureInfo.AverageCelsius.ToLocalizedTemperatureText(resolvedUnit)}", false),
+                TreeFormatter.CreateNode($"{Strings.SystemInfo_Maximum}: {temperatureInfo.MaximumCelsius.ToLocalizedTemperatureText(resolvedUnit)}", true)
             ];
         }
 
-        private static string ToLocalizedTemperatureText(this float temperatureCelsius)
+        private static string ToLocalizedTemperatureText(this float temperatureCelsius, TemperatureUnit resolvedUnit)
         {
-            var value = usesFahrenheit
+            var useFahrenheit = resolvedUnit == TemperatureUnit.Fahrenheit;
+            var value = useFahrenheit
                 ? temperatureCelsius * CELSIUS_TO_FAHRENHEIT_SCALE + CELSIUS_TO_FAHRENHEIT_OFFSET
                 : temperatureCelsius;
-            var format = usesFahrenheit
+            var format = useFahrenheit
                 ? Strings.SystemInfo_TemperatureFahrenheitFormat
                 : Strings.SystemInfo_TemperatureCelsiusFormat;
             return string.Format(CultureInfo.CurrentCulture, format, value);
-        }
-
-        private static bool UsesFahrenheit()
-        {
-            try
-            {
-                return !new RegionInfo(CultureInfo.CurrentCulture.Name).IsMetric;
-            }
-            catch (ArgumentException)
-            {
-                return false;
-            }
         }
     }
 

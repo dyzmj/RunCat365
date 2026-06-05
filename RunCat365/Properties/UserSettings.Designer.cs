@@ -46,7 +46,19 @@ namespace RunCat365.Properties {
                 this["Theme"] = value;
             }
         }
-        
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TemperatureUnit {
+            get {
+                return ((string)(this["TemperatureUnit"]));
+            }
+            set {
+                this["TemperatureUnit"] = value;
+            }
+        }
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("FPS40")]

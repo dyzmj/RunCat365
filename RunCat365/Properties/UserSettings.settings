@@ -8,6 +8,9 @@
     <Setting Name="Theme" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="TemperatureUnit" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
     <Setting Name="FPSMaxLimit" Type="System.String" Scope="User">
       <Value Profile="(Default)">FPS40</Value>
     </Setting>

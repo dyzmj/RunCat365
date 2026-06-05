@@ -153,6 +153,18 @@
   <data name="Theme_Dark" xml:space="preserve">
     <value>Sombre</value>
   </data>
+  <data name="Menu_TemperatureUnit" xml:space="preserve">
+    <value>Unité de température</value>
+  </data>
+  <data name="TemperatureUnit_System" xml:space="preserve">
+    <value>Système</value>
+  </data>
+  <data name="TemperatureUnit_Celsius" xml:space="preserve">
+    <value>Celsius</value>
+  </data>
+  <data name="TemperatureUnit_Fahrenheit" xml:space="preserve">
+    <value>Fahrenheit</value>
+  </data>
   <data name="Runner_Cat" xml:space="preserve">
     <value>Chat</value>
   </data>
