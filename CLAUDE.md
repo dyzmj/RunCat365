@@ -84,6 +84,7 @@ This is a Windows Forms application (.NET 9.0 / C#) for Microsoft Store distribu
 - Japanese uses "Noto Sans JP" font
 - Chinese (simplified) uses "Microsoft YaHei" font
 - Chinese (traditional) uses "Microsoft JhengHei" font
+- When adding a brand-new locale (not just new strings), follow the `.claude/skills/add-locale` skill — it covers the resx file, `SupportedLanguage.cs`, README, and this file
 
 ## Coding Rules
 

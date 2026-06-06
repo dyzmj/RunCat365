@@ -1,12 +1,12 @@
 ---
-name: add-localization
-description: Adds a new language locale to RunCat365. Use when adding a new language, translating the UI, creating a .resx resource file, or updating SupportedLanguage.cs with a new language code.
+name: add-locale
+description: Adds a new locale to RunCat365. Use when adding a new language, creating a Strings.{lc}.resx file, registering a CultureInfo, or extending SupportedLanguage.cs with a new entry.
 argument-hint: <language name or BCP 47 code>
 ---
 
-# Add a New Localization to RunCat365
+# Add a New Locale to RunCat365
 
-Modify 3 files to add support for `$ARGUMENTS`. French (`fr`) is used as an example.
+Modify 4 files to add support for `$ARGUMENTS`. French (`fr`) is used as an example.
 
 ## Steps
 

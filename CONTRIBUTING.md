@@ -84,6 +84,7 @@ To suggest a new feature:
 - **.NET 9.0** is required.
 - All code must be written in **English**.  
   Use the localization system for user-facing text in other languages.
+  If you use Claude Code, the `.claude/skills/add-locale` skill walks through every file that needs updating when introducing a new locale.
 - Use the **[Allman indentation style](https://en.wikipedia.org/wiki/Indentation_style#Allman_style)**.
 - Use `var` when the type is obvious from the assignment.
 - Follow the existing formatting and conventions used in the codebase.
