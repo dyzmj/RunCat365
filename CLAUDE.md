@@ -4,9 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## You Must
 
-- Please respond in Japanese.
+- Respond in the same language the user is writing in.
 - Commit to Git only when instructed.
 - If multiple requirements are given in a single instruction, divide the commits into appropriate sizes/granularities.
+- When creating a pull request, use the `.claude/skills/create-pr` skill so the project's `.github/pull_request_template.md` is followed.
 
 ## Build & Development
 
@@ -36,7 +37,8 @@ This is a Windows Forms application (.NET 9.0 / C#) for Microsoft Store distribu
 **Core components:**
 
 - `ContextMenuManager` - Manages the system tray icon, context menu, and notification icon animation; uses `iconLock` for thread-safe icon updates
-- `Runner` - Enum for animation types (Cat, Parrot, Horse) with frame counts
+- `Runner` - Enum for built-in animation types (Cat, Parrot, Horse) with frame counts
+- `CustomRunnerForm` / `CustomRunnerProfile` / `CustomRunnerRepository` - User-defined runner animations loaded from `profiles.json` (selected via the `CustomRunnerName` setting)
 - `EndlessGameForm` - Mini-game featuring the running cat
 - `LaunchAtStartupManager` - Startup registration via Windows App Runtime
 
@@ -47,6 +49,7 @@ This is a Windows Forms application (.NET 9.0 / C#) for Microsoft Store distribu
 - `MemoryRepository` - Memory usage
 - `StorageRepository` - Disk usage
 - `NetworkRepository` - Network statistics
+- `TemperatureRepository` - CPU temperature (Celsius / Fahrenheit selectable via `TemperatureUnit` setting)
 
 **Animation flow:**
 
@@ -67,7 +70,7 @@ This is a Windows Forms application (.NET 9.0 / C#) for Microsoft Store distribu
 
 **Settings:**
 
-- `Properties/UserSettings.settings` - User preferences (Runner, Theme, SpeedSource, FPSMaxLimit)
+- `Properties/UserSettings.settings` - User preferences (Runner, Theme, TemperatureUnit, FPSMaxLimit, FirstLaunch, HighScore, SpeedSource, CustomRunnerName)
 - `Properties/Resources.resx` - Embedded images and icons
 - `Properties/Strings.resx` - Localized strings (English default); per-locale variants live alongside as `Properties/Strings.{locale}.resx`
 
