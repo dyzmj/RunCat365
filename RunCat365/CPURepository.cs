@@ -47,31 +47,66 @@ namespace RunCat365
 
     internal class CPUPerformanceCounters
     {
+        private const string PROCESSOR_INFORMATION_CATEGORY = "Processor Information";
+        private const string PROCESSOR_CATEGORY = "Processor";
+        private const string TOTAL_INSTANCE = "_Total";
+
         internal PerformanceCounter Total { get; }
         internal PerformanceCounter User { get; }
         internal PerformanceCounter Kernel { get; }
         internal PerformanceCounter Idle { get; }
 
-        private CPUPerformanceCounters()
+        private CPUPerformanceCounters(
+            PerformanceCounter total,
+            PerformanceCounter user,
+            PerformanceCounter kernel,
+            PerformanceCounter idle)
         {
-            Total = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-            User = new PerformanceCounter("Processor", "% User Time", "_Total");
-            Kernel = new PerformanceCounter("Processor", "% Privileged Time", "_Total");
-            Idle = new PerformanceCounter("Processor", "% Idle Time", "_Total");
-            _ = Total.NextValue();
-            _ = User.NextValue();
-            _ = Kernel.NextValue();
-            _ = Idle.NextValue();
+            Total = total;
+            User = user;
+            Kernel = kernel;
+            Idle = idle;
         }
 
         internal static CPUPerformanceCounters? TryCreate()
         {
+            return TryCreateFromCategory(PROCESSOR_INFORMATION_CATEGORY, TOTAL_INSTANCE)
+                ?? TryCreateFromCategory(PROCESSOR_CATEGORY, TOTAL_INSTANCE);
+        }
+
+        private static CPUPerformanceCounters? TryCreateFromCategory(string categoryName, string instanceName)
+        {
+            PerformanceCounter? total = null;
+            PerformanceCounter? user = null;
+            PerformanceCounter? kernel = null;
+            PerformanceCounter? idle = null;
             try
             {
-                return new CPUPerformanceCounters();
+                total = new PerformanceCounter(categoryName, "% Processor Utility", instanceName);
             }
             catch
             {
+                total?.Close();
+                total = null;
+            }
+            try
+            {
+                total ??= new PerformanceCounter(categoryName, "% Processor Time", instanceName);
+                user = new PerformanceCounter(categoryName, "% User Time", instanceName);
+                kernel = new PerformanceCounter(categoryName, "% Privileged Time", instanceName);
+                idle = new PerformanceCounter(categoryName, "% Idle Time", instanceName);
+                _ = total.NextValue();
+                _ = user.NextValue();
+                _ = kernel.NextValue();
+                _ = idle.NextValue();
+                return new CPUPerformanceCounters(total, user, kernel, idle);
+            }
+            catch
+            {
+                total?.Close();
+                user?.Close();
+                kernel?.Close();
+                idle?.Close();
                 return null;
             }
         }
