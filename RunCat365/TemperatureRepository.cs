@@ -63,40 +63,105 @@ namespace RunCat365
         private const string CATEGORY_NAME = "Thermal Zone Information";
         private const string COUNTER_NAME = "Temperature";
 
-        internal IReadOnlyList<PerformanceCounter> Counters { get; }
+        private readonly Dictionary<string, PerformanceCounter> countersByInstance = [];
 
-        private TemperaturePerformanceCounters(List<PerformanceCounter> counters)
-        {
-            Counters = counters;
-        }
+        private TemperaturePerformanceCounters() { }
+
+        internal int Count => countersByInstance.Count;
 
         internal static TemperaturePerformanceCounters? TryCreate()
         {
-            var counters = new List<PerformanceCounter>();
             try
             {
-                var category = new PerformanceCounterCategory(CATEGORY_NAME);
-                var instanceNames = category.GetInstanceNames();
-                if (instanceNames.Length == 0) return null;
-
-                foreach (var instance in instanceNames)
-                {
-                    var counter = new PerformanceCounter(CATEGORY_NAME, COUNTER_NAME, instance);
-                    counters.Add(counter);
-                    _ = counter.NextValue();
-                }
-                return new TemperaturePerformanceCounters(counters);
+                _ = new PerformanceCounterCategory(CATEGORY_NAME);
             }
             catch
             {
-                foreach (var counter in counters) counter.Close();
                 return null;
             }
+
+            var instance = new TemperaturePerformanceCounters();
+            instance.RefreshInstances();
+            return instance.Count == 0 ? null : instance;
+        }
+
+        internal void RefreshInstances()
+        {
+            string[] currentInstanceNames;
+            try
+            {
+                var category = new PerformanceCounterCategory(CATEGORY_NAME);
+                currentInstanceNames = category.GetInstanceNames();
+            }
+            catch (Exception exception) when (
+                exception is InvalidOperationException
+                or System.ComponentModel.Win32Exception
+                or UnauthorizedAccessException)
+            {
+                Debug.WriteLine($"TemperaturePerformanceCounters.RefreshInstances failed: {exception.Message}");
+                return;
+            }
+
+            var currentSet = new HashSet<string>(currentInstanceNames, StringComparer.Ordinal);
+            var staleInstances = countersByInstance.Keys
+                .Where(name => !currentSet.Contains(name))
+                .ToList();
+            foreach (var instanceName in staleInstances)
+            {
+                countersByInstance[instanceName].Close();
+                countersByInstance.Remove(instanceName);
+            }
+
+            foreach (var instanceName in currentInstanceNames)
+            {
+                if (countersByInstance.ContainsKey(instanceName)) continue;
+                try
+                {
+                    var counter = new PerformanceCounter(CATEGORY_NAME, COUNTER_NAME, instanceName);
+                    _ = counter.NextValue();
+                    countersByInstance[instanceName] = counter;
+                }
+                catch (Exception exception) when (
+                    exception is InvalidOperationException
+                    or System.ComponentModel.Win32Exception
+                    or UnauthorizedAccessException)
+                {
+                    Debug.WriteLine($"TemperaturePerformanceCounters: failed to create counter for {instanceName}: {exception.Message}");
+                }
+            }
+        }
+
+        internal List<float> ReadValues()
+        {
+            var values = new List<float>(countersByInstance.Count);
+            var deadInstances = new List<string>();
+            foreach (var pair in countersByInstance)
+            {
+                try
+                {
+                    values.Add(pair.Value.NextValue());
+                }
+                catch (Exception exception) when (
+                    exception is InvalidOperationException
+                    or System.ComponentModel.Win32Exception
+                    or UnauthorizedAccessException)
+                {
+                    Debug.WriteLine($"TemperaturePerformanceCounters: counter {pair.Key} failed: {exception.Message}");
+                    deadInstances.Add(pair.Key);
+                }
+            }
+            foreach (var instanceName in deadInstances)
+            {
+                countersByInstance[instanceName].Close();
+                countersByInstance.Remove(instanceName);
+            }
+            return values;
         }
 
         internal void Close()
         {
-            foreach (var counter in Counters) counter.Close();
+            foreach (var counter in countersByInstance.Values) counter.Close();
+            countersByInstance.Clear();
         }
     }
 
@@ -105,9 +170,11 @@ namespace RunCat365
         private const float KELVIN_TO_CELSIUS_OFFSET = 273.15f;
         private const float MIN_VALID_TEMPERATURE_CELSIUS = -50.0f;
         private const float MAX_VALID_TEMPERATURE_CELSIUS = 150.0f;
+        private const int REFRESH_INTERVAL_TICKS = 30;
 
         private readonly TemperaturePerformanceCounters? counters;
         private TemperatureInfo? temperatureInfo;
+        private int ticksSinceLastRefresh;
 
         internal bool IsAvailable => counters is not null;
 
@@ -119,34 +186,31 @@ namespace RunCat365
         internal void Update()
         {
             if (counters is null) return;
-            try
-            {
-                var temperaturesCelsius = new List<float>();
-                foreach (var counter in counters.Counters)
-                {
-                    var temperatureKelvin = counter.NextValue();
-                    if (temperatureKelvin <= 0) continue;
-                    var temperatureCelsius = temperatureKelvin - KELVIN_TO_CELSIUS_OFFSET;
-                    if (temperatureCelsius is < MIN_VALID_TEMPERATURE_CELSIUS or > MAX_VALID_TEMPERATURE_CELSIUS) continue;
-                    temperaturesCelsius.Add(temperatureCelsius);
-                }
 
-                temperatureInfo = temperaturesCelsius.Count == 0
-                    ? null
-                    : new TemperatureInfo
-                    {
-                        AverageCelsius = temperaturesCelsius.Average(),
-                        MaximumCelsius = temperaturesCelsius.Max()
-                    };
-            }
-            catch (Exception exception) when (
-                exception is InvalidOperationException
-                or System.ComponentModel.Win32Exception
-                or UnauthorizedAccessException)
+            ticksSinceLastRefresh += 1;
+            if (REFRESH_INTERVAL_TICKS <= ticksSinceLastRefresh)
             {
-                Debug.WriteLine($"TemperatureRepository.Update failed: {exception.Message}");
-                temperatureInfo = null;
+                ticksSinceLastRefresh = 0;
+                counters.RefreshInstances();
             }
+
+            var rawValues = counters.ReadValues();
+            var temperaturesCelsius = new List<float>(rawValues.Count);
+            foreach (var temperatureKelvin in rawValues)
+            {
+                if (temperatureKelvin <= 0) continue;
+                var temperatureCelsius = temperatureKelvin - KELVIN_TO_CELSIUS_OFFSET;
+                if (temperatureCelsius is < MIN_VALID_TEMPERATURE_CELSIUS or > MAX_VALID_TEMPERATURE_CELSIUS) continue;
+                temperaturesCelsius.Add(temperatureCelsius);
+            }
+
+            temperatureInfo = temperaturesCelsius.Count == 0
+                ? null
+                : new TemperatureInfo
+                {
+                    AverageCelsius = temperaturesCelsius.Average(),
+                    MaximumCelsius = temperaturesCelsius.Max()
+                };
         }
 
         internal TemperatureInfo? Get()

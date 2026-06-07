@@ -54,18 +54,15 @@ namespace RunCat365
         internal PerformanceCounter Total { get; }
         internal PerformanceCounter User { get; }
         internal PerformanceCounter Kernel { get; }
-        internal PerformanceCounter Idle { get; }
 
         private CPUPerformanceCounters(
             PerformanceCounter total,
             PerformanceCounter user,
-            PerformanceCounter kernel,
-            PerformanceCounter idle)
+            PerformanceCounter kernel)
         {
             Total = total;
             User = user;
             Kernel = kernel;
-            Idle = idle;
         }
 
         internal static CPUPerformanceCounters? TryCreate()
@@ -79,7 +76,6 @@ namespace RunCat365
             PerformanceCounter? total = null;
             PerformanceCounter? user = null;
             PerformanceCounter? kernel = null;
-            PerformanceCounter? idle = null;
             try
             {
                 total = new PerformanceCounter(categoryName, "% Processor Utility", instanceName);
@@ -94,19 +90,16 @@ namespace RunCat365
                 total ??= new PerformanceCounter(categoryName, "% Processor Time", instanceName);
                 user = new PerformanceCounter(categoryName, "% User Time", instanceName);
                 kernel = new PerformanceCounter(categoryName, "% Privileged Time", instanceName);
-                idle = new PerformanceCounter(categoryName, "% Idle Time", instanceName);
                 _ = total.NextValue();
                 _ = user.NextValue();
                 _ = kernel.NextValue();
-                _ = idle.NextValue();
-                return new CPUPerformanceCounters(total, user, kernel, idle);
+                return new CPUPerformanceCounters(total, user, kernel);
             }
             catch
             {
                 total?.Close();
                 user?.Close();
                 kernel?.Close();
-                idle?.Close();
                 return null;
             }
         }
@@ -116,7 +109,6 @@ namespace RunCat365
             Total.Close();
             User.Close();
             Kernel.Close();
-            Idle.Close();
         }
     }
 
@@ -137,12 +129,17 @@ namespace RunCat365
         {
             if (counters is null) return;
 
+            var total = Math.Min(100, counters.Total.NextValue());
+            var user = Math.Min(100, counters.User.NextValue());
+            var kernel = Math.Min(100, counters.Kernel.NextValue());
+            var idle = Math.Max(0, 100 - user - kernel);
+
             var cpuInfo = new CPUInfo
             {
-                Total = Math.Min(100, counters.Total.NextValue()),
-                User = Math.Min(100, counters.User.NextValue()),
-                Kernel = Math.Min(100, counters.Kernel.NextValue()),
-                Idle = Math.Min(100, counters.Idle.NextValue()),
+                Total = total,
+                User = user,
+                Kernel = kernel,
+                Idle = idle,
             };
 
             cpuInfoList.Add(cpuInfo);
