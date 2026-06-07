@@ -50,6 +50,11 @@ namespace RunCat365
         private const string PROCESSOR_INFORMATION_CATEGORY = "Processor Information";
         private const string PROCESSOR_CATEGORY = "Processor";
         private const string TOTAL_INSTANCE = "_Total";
+        private const string PROCESSOR_UTILITY_COUNTER = "% Processor Utility";
+        private const string PROCESSOR_TIME_COUNTER = "% Processor Time";
+        private const string USER_TIME_COUNTER = "% User Time";
+        private const string PRIVILEGED_TIME_COUNTER = "% Privileged Time";
+        private const int PROCESSOR_TIME_BASED_TASK_MANAGER_MINIMUM_BUILD = 26100;
 
         internal PerformanceCounter Total { get; }
         internal PerformanceCounter User { get; }
@@ -71,25 +76,33 @@ namespace RunCat365
                 ?? TryCreateFromCategory(PROCESSOR_CATEGORY, TOTAL_INSTANCE);
         }
 
+        private static bool TaskManagerUsesProcessorTime()
+        {
+            return PROCESSOR_TIME_BASED_TASK_MANAGER_MINIMUM_BUILD <= Environment.OSVersion.Version.Build;
+        }
+
         private static CPUPerformanceCounters? TryCreateFromCategory(string categoryName, string instanceName)
         {
             PerformanceCounter? total = null;
             PerformanceCounter? user = null;
             PerformanceCounter? kernel = null;
+            if (!TaskManagerUsesProcessorTime())
+            {
+                try
+                {
+                    total = new PerformanceCounter(categoryName, PROCESSOR_UTILITY_COUNTER, instanceName);
+                }
+                catch
+                {
+                    total?.Close();
+                    total = null;
+                }
+            }
             try
             {
-                total = new PerformanceCounter(categoryName, "% Processor Utility", instanceName);
-            }
-            catch
-            {
-                total?.Close();
-                total = null;
-            }
-            try
-            {
-                total ??= new PerformanceCounter(categoryName, "% Processor Time", instanceName);
-                user = new PerformanceCounter(categoryName, "% User Time", instanceName);
-                kernel = new PerformanceCounter(categoryName, "% Privileged Time", instanceName);
+                total ??= new PerformanceCounter(categoryName, PROCESSOR_TIME_COUNTER, instanceName);
+                user = new PerformanceCounter(categoryName, USER_TIME_COUNTER, instanceName);
+                kernel = new PerformanceCounter(categoryName, PRIVILEGED_TIME_COUNTER, instanceName);
                 _ = total.NextValue();
                 _ = user.NextValue();
                 _ = kernel.NextValue();
