@@ -6,7 +6,7 @@ argument-hint: <language name or BCP 47 code>
 
 # Add a New Locale to RunCat365
 
-Modify 4 files to add support for `$ARGUMENTS`. French (`fr`) is used as an example.
+Modify 3 files to add support for `$ARGUMENTS`. French (`fr`) is used as an example.
 
 ## Steps
 
@@ -85,15 +85,7 @@ return language switch
 };
 ```
 
-### 3. Update `CLAUDE.md`
-
-Update the Localization notes to include the new language:
-
-- Add the new `Strings.{lc}.resx` line under the `**Settings:**` → `Properties/Strings.resx` bullet, keeping the existing alphabetical order by display name
-- Update the `**Localization notes:**` bullet for "Add new strings to all N `.resx` files simultaneously" so the count matches the new total
-- Add a font line for the new language if it uses a font other than `"Consolas"`; otherwise group it with the existing `"Consolas"` line
-
-### 4. Update `README.md`
+### 3. Update `README.md`
 
 Add the new language to the **Installation** → **Language:** list, preserving the existing alphabetical order by English display name (e.g. `French` between `English (default)` and `German`). Match the existing two-space indentation under the `- Language:` bullet.
 
@@ -105,6 +97,5 @@ Add the new language to the **Installation** → **Language:** list, preserving 
 - [ ] Added culture to `GetDefaultCultureInfo()`
 - [ ] Added font to `GetFontName()`
 - [ ] Added full-width flag to `IsFullWidth()`
-- [ ] Updated Localization notes in `CLAUDE.md`
 - [ ] Added the language to the Installation language list in `README.md`
 - [ ] Built in Visual Studio and verified UI with OS language set to the target language
