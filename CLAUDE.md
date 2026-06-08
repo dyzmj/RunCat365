@@ -69,21 +69,13 @@ This is a Windows Forms application (.NET 9.0 / C#) for Microsoft Store distribu
 
 - `Properties/UserSettings.settings` - User preferences (Runner, Theme, SpeedSource, FPSMaxLimit)
 - `Properties/Resources.resx` - Embedded images and icons
-- `Properties/Strings.resx` - Localized strings (English default);
-  - `Strings.zh-CN.resx` (Chinese (simplified))
-  - `Strings.zh-TW.resx` (Chinese (traditional))
-  - `Strings.fr.resx` (French)
-  - `Strings.de.resx` (German)
-  - `Strings.ja.resx` (Japanese)
-  - `Strings.es.resx` (Spanish)
+- `Properties/Strings.resx` - Localized strings (English default); per-locale variants live alongside as `Properties/Strings.{locale}.resx`
 
 **Localization notes:**
 
-- Add new strings to all seven `.resx` files simultaneously
-- English/Spanish/French/German use "Consolas"
-- Japanese uses "Noto Sans JP" font
-- Chinese (simplified) uses "Microsoft YaHei" font
-- Chinese (traditional) uses "Microsoft JhengHei" font
+- Add new strings to every `Strings*.resx` file simultaneously
+- Per-locale font and culture settings live in `SupportedLanguage.cs` (`GetFontName`, `GetDefaultCultureInfo`, `IsFullWidth`)
+- When adding a brand-new locale (not just new strings), follow the `.claude/skills/add-locale` skill
 
 ## Coding Rules
 
