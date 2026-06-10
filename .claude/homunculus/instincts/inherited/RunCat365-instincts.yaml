@@ -1,0 +1,292 @@
+# Instincts generated from https://github.com/dyzmj/RunCat365
+# Generated: 2026-05-05T18:36:43.248Z
+# Version: 2.0
+# NOTE: This file supplements (does not replace) any existing curated instincts.
+# High-confidence manually curated instincts should be preserved alongside these.
+
+---
+id: RunCat365-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/dyzmj/RunCat365
+---
+
+# RunCat365 Commit Length
+
+## Action
+
+Write moderate-length commit messages (~51 characters)
+
+## Evidence
+
+- Average commit message length: 51 chars
+- Based on 14 commits
+
+---
+id: RunCat365-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/dyzmj/RunCat365
+---
+
+# RunCat365 Naming Files
+
+## Action
+
+Use PascalCase naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: PascalCase
+
+---
+id: RunCat365-import-relative
+trigger: "when importing modules"
+confidence: 0.75
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/dyzmj/RunCat365
+---
+
+# RunCat365 Import Relative
+
+## Action
+
+Use relative imports for project files
+
+## Evidence
+
+- Import analysis shows relative import pattern
+- Example: import { x } from '../lib/x'
+
+---
+id: RunCat365-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/dyzmj/RunCat365
+---
+
+# RunCat365 Export Style
+
+## Action
+
+Prefer named exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: named
+
+---
+id: RunCat365-test-separate
+trigger: "when writing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/dyzmj/RunCat365
+---
+
+# RunCat365 Test Separate
+
+## Action
+
+Place tests in the tests/ or __tests__/ directory, mirroring src structure
+
+## Evidence
+
+- Separate test directory pattern detected
+- Tests live in dedicated test folders
+
+---
+id: RunCat365-workflow-add-or-update-thermal-zone-feature
+trigger: "when doing add or update thermal zone feature"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/dyzmj/RunCat365
+---
+
+# RunCat365 Workflow Add Or Update Thermal Zone Feature
+
+## Action
+
+Follow the add-or-update-thermal-zone-feature workflow:
+1. Edit or create RunCat365/TemperatureRepository.cs to implement or update logic.
+2. Edit RunCat365/Program.cs to integrate or adjust feature usage.
+3. Update resource files for localization: RunCat365/Properties/Strings.*.resx and RunCat365/Properties/Strings.Designer.cs.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: RunCat365/TemperatureRepository.cs, RunCat365/Program.cs, RunCat365/Properties/Strings.Designer.cs
+
+---
+id: RunCat365-workflow-update-contribution-guidelines-and-templates
+trigger: "when doing update contribution guidelines and templates"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/dyzmj/RunCat365
+---
+
+# RunCat365 Workflow Update Contribution Guidelines And Templates
+
+## Action
+
+Follow the update-contribution-guidelines-and-templates workflow:
+1. Edit CONTRIBUTING.md to update guidelines.
+2. Edit or add files in .github/ISSUE_TEMPLATE/ and .github/pull_request_template.md to update templates.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: CONTRIBUTING.md, .github/ISSUE_TEMPLATE/bug_report.yml, .github/ISSUE_TEMPLATE/feature_request.yml
+
+---
+id: runcat365-instinct-csharp-naming
+trigger: "When creating or renaming files, classes, functions, or constants in C# code."
+confidence: 0.85
+domain: code-style
+source: repo-analysis
+source_repo: dyzmj/RunCat365
+---
+
+# Runcat365 Instinct Csharp Naming
+
+## Action
+
+Use PascalCase for files and classes, camelCase for functions, and SCREAMING_SNAKE_CASE for constants.
+
+## Evidence
+
+- Naming conventions specified in analysis
+- Observed in RunCat365/Program.cs and RunCat365/TemperatureRepository.cs
+
+---
+id: runcat365-instinct-csharp-import-export
+trigger: "When importing or exporting modules in C# code."
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: dyzmj/RunCat365
+---
+
+# Runcat365 Instinct Csharp Import Export
+
+## Action
+
+Use relative imports and named exports.
+
+## Evidence
+
+- Import/export style specified in analysis
+- Pattern in RunCat365/TemperatureRepository.cs
+
+---
+id: runcat365-instinct-test-location
+trigger: "When adding or updating tests."
+confidence: 0.7
+domain: testing
+source: repo-analysis
+source_repo: dyzmj/RunCat365
+---
+
+# Runcat365 Instinct Test Location
+
+## Action
+
+Place test files in a separate test directory, not within the main source folder.
+
+## Evidence
+
+- Architecture analysis: testLocation is 'separate'
+- Common C# project structure
+
+---
+id: runcat365-instinct-commit-prefix
+trigger: "When writing a commit message."
+confidence: 0.9
+domain: git
+source: repo-analysis
+source_repo: dyzmj/RunCat365
+---
+
+# Runcat365 Instinct Commit Prefix
+
+## Action
+
+Start the commit message with a prefix: 'fix', 'feat', or 'refactor', followed by a colon and a short description.
+
+## Evidence
+
+- Seen in commits: 'feat: Add native CPU/GPU thermal zone monitoring (Phase 1)', 'fix: aggregate thermal zone readings', 'refactor: remove temperature ring buffer for Phase 1 to minimize memory footprint'
+
+---
+id: runcat365-instinct-commit-length
+trigger: "When composing a commit message."
+confidence: 0.7
+domain: git
+source: repo-analysis
+source_repo: dyzmj/RunCat365
+---
+
+# Runcat365 Instinct Commit Length
+
+## Action
+
+Keep the commit message concise, averaging around 50 characters.
+
+## Evidence
+
+- Average commit length is 51 characters
+- Examples in commit history
+
+---
+id: runcat365-instinct-thermal-zone-workflow
+trigger: "When adding or updating the thermal zone monitoring feature."
+confidence: 0.95
+domain: workflow
+source: repo-analysis
+source_repo: dyzmj/RunCat365
+---
+
+# Runcat365 Instinct Thermal Zone Workflow
+
+## Action
+
+Edit or create RunCat365/TemperatureRepository.cs, update RunCat365/Program.cs, and update all relevant localization resource files.
+
+## Evidence
+
+- Workflow 'add-or-update-thermal-zone-feature' detected
+- Pattern in commit sequence and files involved
+
+---
+id: runcat365-instinct-contribution-guidelines-workflow
+trigger: "When updating contribution guidelines or GitHub templates."
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: dyzmj/RunCat365
+---
+
+# Runcat365 Instinct Contribution Guidelines Workflow
+
+## Action
+
+Edit CONTRIBUTING.md and update or add files in .github/ISSUE_TEMPLATE/ and .github/pull_request_template.md.
+
+## Evidence
+
+- Workflow 'update-contribution-guidelines-and-templates' detected
+- Pattern in commit sequence and files involved
+
