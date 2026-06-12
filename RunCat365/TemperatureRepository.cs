@@ -13,7 +13,6 @@
 //    limitations under the License.
 
 using RunCat365.Properties;
-using System.Diagnostics;
 using System.Globalization;
 
 namespace RunCat365
@@ -58,110 +57,15 @@ namespace RunCat365
         }
     }
 
-    internal class TemperaturePerformanceCounters
+    internal sealed class TemperaturePerformanceCounters : InstancedPerformanceCounters
     {
-        private const string CATEGORY_NAME = "Thermal Zone Information";
-        private const string COUNTER_NAME = "Temperature";
-
-        private readonly Dictionary<string, PerformanceCounter> countersByInstance = [];
-
-        private TemperaturePerformanceCounters() { }
-
-        internal int Count => countersByInstance.Count;
+        protected override string CategoryName => "Thermal Zone Information";
+        protected override string CounterName => "Temperature";
 
         internal static TemperaturePerformanceCounters? TryCreate()
         {
-            try
-            {
-                _ = new PerformanceCounterCategory(CATEGORY_NAME);
-            }
-            catch
-            {
-                return null;
-            }
-
             var instance = new TemperaturePerformanceCounters();
-            instance.RefreshInstances();
-            return instance.Count == 0 ? null : instance;
-        }
-
-        internal void RefreshInstances()
-        {
-            string[] currentInstanceNames;
-            try
-            {
-                var category = new PerformanceCounterCategory(CATEGORY_NAME);
-                currentInstanceNames = category.GetInstanceNames();
-            }
-            catch (Exception exception) when (
-                exception is InvalidOperationException
-                or System.ComponentModel.Win32Exception
-                or UnauthorizedAccessException)
-            {
-                Debug.WriteLine($"TemperaturePerformanceCounters.RefreshInstances failed: {exception.Message}");
-                return;
-            }
-
-            var currentSet = new HashSet<string>(currentInstanceNames, StringComparer.Ordinal);
-            var staleInstances = countersByInstance.Keys
-                .Where(name => !currentSet.Contains(name))
-                .ToList();
-            foreach (var instanceName in staleInstances)
-            {
-                countersByInstance[instanceName].Close();
-                countersByInstance.Remove(instanceName);
-            }
-
-            foreach (var instanceName in currentInstanceNames)
-            {
-                if (countersByInstance.ContainsKey(instanceName)) continue;
-                try
-                {
-                    var counter = new PerformanceCounter(CATEGORY_NAME, COUNTER_NAME, instanceName);
-                    _ = counter.NextValue();
-                    countersByInstance[instanceName] = counter;
-                }
-                catch (Exception exception) when (
-                    exception is InvalidOperationException
-                    or System.ComponentModel.Win32Exception
-                    or UnauthorizedAccessException)
-                {
-                    Debug.WriteLine($"TemperaturePerformanceCounters: failed to create counter for {instanceName}: {exception.Message}");
-                }
-            }
-        }
-
-        internal List<float> ReadValues()
-        {
-            var values = new List<float>(countersByInstance.Count);
-            var deadInstances = new List<string>();
-            foreach (var pair in countersByInstance)
-            {
-                try
-                {
-                    values.Add(pair.Value.NextValue());
-                }
-                catch (Exception exception) when (
-                    exception is InvalidOperationException
-                    or System.ComponentModel.Win32Exception
-                    or UnauthorizedAccessException)
-                {
-                    Debug.WriteLine($"TemperaturePerformanceCounters: counter {pair.Key} failed: {exception.Message}");
-                    deadInstances.Add(pair.Key);
-                }
-            }
-            foreach (var instanceName in deadInstances)
-            {
-                countersByInstance[instanceName].Close();
-                countersByInstance.Remove(instanceName);
-            }
-            return values;
-        }
-
-        internal void Close()
-        {
-            foreach (var counter in countersByInstance.Values) counter.Close();
-            countersByInstance.Clear();
+            return instance.TryInitialize() ? instance : null;
         }
     }
 

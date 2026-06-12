@@ -13,7 +13,6 @@
 //    limitations under the License.
 
 using RunCat365.Properties;
-using System.Diagnostics;
 
 namespace RunCat365
 {
@@ -42,113 +41,22 @@ namespace RunCat365
         }
     }
 
-    internal class GPUPerformanceCounters
+    internal sealed class GPUPerformanceCounters : InstancedPerformanceCounters
     {
-        private const string CATEGORY_NAME = "GPU Engine";
-        private const string COUNTER_NAME = "Utilization Percentage";
         private const string ENGINE_TYPE_FILTER = "engtype_3D";
 
-        private readonly Dictionary<string, PerformanceCounter> countersByInstance = [];
+        protected override string CategoryName => "GPU Engine";
+        protected override string CounterName => "Utilization Percentage";
 
-        private GPUPerformanceCounters() { }
-
-        internal int Count => countersByInstance.Count;
+        protected override bool ShouldIncludeInstance(string instanceName)
+        {
+            return instanceName.Contains(ENGINE_TYPE_FILTER);
+        }
 
         internal static GPUPerformanceCounters? TryCreate()
         {
-            try
-            {
-                _ = new PerformanceCounterCategory(CATEGORY_NAME);
-            }
-            catch
-            {
-                return null;
-            }
-
             var instance = new GPUPerformanceCounters();
-            instance.RefreshInstances();
-            return instance.Count == 0 ? null : instance;
-        }
-
-        internal void RefreshInstances()
-        {
-            string[] currentInstanceNames;
-            try
-            {
-                var category = new PerformanceCounterCategory(CATEGORY_NAME);
-                currentInstanceNames = category.GetInstanceNames()
-                    .Where(name => name.Contains(ENGINE_TYPE_FILTER))
-                    .ToArray();
-            }
-            catch (Exception exception) when (
-                exception is InvalidOperationException
-                or System.ComponentModel.Win32Exception
-                or UnauthorizedAccessException)
-            {
-                Debug.WriteLine($"GPUPerformanceCounters.RefreshInstances failed: {exception.Message}");
-                return;
-            }
-
-            var currentSet = new HashSet<string>(currentInstanceNames, StringComparer.Ordinal);
-            var staleInstances = countersByInstance.Keys
-                .Where(name => !currentSet.Contains(name))
-                .ToList();
-            foreach (var instanceName in staleInstances)
-            {
-                countersByInstance[instanceName].Close();
-                countersByInstance.Remove(instanceName);
-            }
-
-            foreach (var instanceName in currentInstanceNames)
-            {
-                if (countersByInstance.ContainsKey(instanceName)) continue;
-                try
-                {
-                    var counter = new PerformanceCounter(CATEGORY_NAME, COUNTER_NAME, instanceName);
-                    _ = counter.NextValue();
-                    countersByInstance[instanceName] = counter;
-                }
-                catch (Exception exception) when (
-                    exception is InvalidOperationException
-                    or System.ComponentModel.Win32Exception
-                    or UnauthorizedAccessException)
-                {
-                    Debug.WriteLine($"GPUPerformanceCounters: failed to create counter for {instanceName}: {exception.Message}");
-                }
-            }
-        }
-
-        internal List<float> ReadValues()
-        {
-            var values = new List<float>(countersByInstance.Count);
-            var deadInstances = new List<string>();
-            foreach (var pair in countersByInstance)
-            {
-                try
-                {
-                    values.Add(pair.Value.NextValue());
-                }
-                catch (Exception exception) when (
-                    exception is InvalidOperationException
-                    or System.ComponentModel.Win32Exception
-                    or UnauthorizedAccessException)
-                {
-                    Debug.WriteLine($"GPUPerformanceCounters: counter {pair.Key} failed: {exception.Message}");
-                    deadInstances.Add(pair.Key);
-                }
-            }
-            foreach (var instanceName in deadInstances)
-            {
-                countersByInstance[instanceName].Close();
-                countersByInstance.Remove(instanceName);
-            }
-            return values;
-        }
-
-        internal void Close()
-        {
-            foreach (var counter in countersByInstance.Values) counter.Close();
-            countersByInstance.Clear();
+            return instance.TryInitialize() ? instance : null;
         }
     }
 
