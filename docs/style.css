@@ -71,18 +71,6 @@ body {
   border-bottom: none;
 }
 
-.privacy-policy .lbs-header .lbs-heading-1 {
-  font-size: clamp(1.6rem, 4vw, 2rem);
-  font-style: normal;
-}
-
-.privacy-policy .lbs-header + .lbs-paragraph {
-  max-width: none;
-  margin: 0.85rem 0;
-  text-align: left;
-  font-size: 1rem;
-}
-
 /* ----- Hero (lead, demo, download) ----- */
 
 .lbs-header + .lbs-paragraph {
@@ -414,6 +402,31 @@ body {
 .lbs-footer .lbs-strong {
   color: var(--lbs-accent-strong);
   font-weight: 700;
+}
+
+/* ----- Legal pages (restrained, document-like header) ----- */
+
+.privacy-policy .lbs-header {
+  text-align: left;
+}
+
+.privacy-policy .lbs-header .lbs-heading-1 {
+  font-size: 1.9rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.privacy-policy .lbs-header .lbs-paragraph {
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+.privacy-policy .lbs-header + .lbs-paragraph {
+  max-width: none;
+  margin: 0.85rem 0;
+  text-align: left;
+  font-size: 1rem;
 }
 
 /* ----- Responsive ----- */
