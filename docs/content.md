@@ -61,7 +61,7 @@ A glance at the taskbar shows you the metrics you care about:
 
 ## Custom runners
 
-Not a cat person? Add your own animation frames and RunCat 365 will run them for you — a parrot, a dog, or anything you can draw.
+Not a cat person? Add your own animation frames and RunCat 365 will run them for you — a parrot, a dog, or anything you can draw. Switch between your runners whenever you like.
 
 ![Custom runner](./images/custom_runner.png)
 
@@ -71,22 +71,10 @@ When you need a break, play a simple endless game controlled with nothing but th
 
 ![Endless game](./images/endless_game.png)
 
-## Languages
-
-RunCat 365 speaks seven languages: English, Japanese, Chinese (Simplified and Traditional), French, German, and Spanish.
-
 ## FAQ
 
-:::details What does the running cat actually show?
-The cat's running speed reflects your device's CPU usage in real time. When the system is idle it walks slowly; under heavy load it sprints. It is a calm, ambient way to feel how busy your machine is without reading any numbers.
-:::
-
-:::details How do I install it?
-RunCat 365 is distributed through the Microsoft Store. [Get it here](https://apps.microsoft.com/detail/9nw5lpnvwfwj).
-:::
-
-:::details Can I use an animation other than the cat?
-Yes. Add your own animation frames to create a custom runner. The active profile is yours to switch at any time.
+:::details What languages are supported?
+RunCat 365 speaks seven languages: English, Japanese, Chinese (Simplified and Traditional), French, German, and Spanish.
 :::
 
 :::details Is this the same as the original RunCat for macOS?
