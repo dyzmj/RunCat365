@@ -9,7 +9,7 @@ The cat tells you the CPU usage of your device by how fast it runs — one glanc
 
 ![RunCat 365 demo](./images/demo.gif =600x)
 
-[![Get it from Microsoft](./images/get_it_from_ms.svg)](https://apps.microsoft.com/detail/9nw5lpnvwfwj)
+[![Download from Microsoft Store](./images/download_from_microsoft_store_en.svg)](https://apps.microsoft.com/detail/9nw5lpnvwfwj)
 
 Available on the Microsoft Store · [View on GitHub](https://github.com/runcat-dev/RunCat365)
 

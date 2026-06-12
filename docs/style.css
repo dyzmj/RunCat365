@@ -117,24 +117,24 @@ body {
 
 /* ----- Microsoft Store badge ----- */
 
-.lbs-image[src*="get_it_from_ms"] {
-  height: 64px;
+.lbs-image[src*="download_from_microsoft_store"] {
+  height: 52px;
   width: auto;
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
-.lbs-paragraph:has(.lbs-image[src*="get_it_from_ms"]) {
+.lbs-paragraph:has(.lbs-image[src*="download_from_microsoft_store"]) {
   margin-top: 2rem;
   margin-bottom: 0.5rem;
 }
 
-.lbs-paragraph a:active .lbs-image[src*="get_it_from_ms"] {
+.lbs-paragraph a:active .lbs-image[src*="download_from_microsoft_store"] {
   opacity: 0.7;
   transform: translateY(2px);
 }
 
 /* availability line directly under the store badge */
-.lbs-paragraph:has(.lbs-image[src*="get_it_from_ms"]) + .lbs-paragraph {
+.lbs-paragraph:has(.lbs-image[src*="download_from_microsoft_store"]) + .lbs-paragraph {
   text-align: center;
   color: var(--lbs-muted);
   font-size: 0.9rem;

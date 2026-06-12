@@ -9,7 +9,7 @@
 
 ![RunCat 365 デモ](./images/demo.gif =600x)
 
-[![Microsoft Store で入手](./images/get_it_from_ms.svg)](https://apps.microsoft.com/detail/9nw5lpnvwfwj)
+[![Microsoft Store からダウンロード](./images/download_from_microsoft_store_ja.svg)](https://apps.microsoft.com/detail/9nw5lpnvwfwj)
 
 Microsoft Store で配信中 · [GitHub で見る](https://github.com/runcat-dev/RunCat365)
 
