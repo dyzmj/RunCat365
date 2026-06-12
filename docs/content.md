@@ -5,7 +5,7 @@
 Cat living in the taskbar.
 :::
 
-The cat tells you the CPU usage of your device by how fast it runs — one glance at the taskbar is all it takes.
+The cat's running speed shows you the CPU load of your device — one glance at the taskbar is all it takes.
 
 ![RunCat 365 demo](./images/demo.gif =600x)
 
@@ -34,9 +34,9 @@ CPU, GPU, memory, temperature, storage, and network — keep an eye on everythin
 
 :::warp custom
 
-### Make it yours
+### A little comfort in your day
 
-Build your own runner from original animation frames, or take a break with the built-in mini-game.
+Just catching sight of it between tasks brings a small moment of calm. You can also take a breather with the built-in mini-game.
 :::
 
 ## What you can monitor
@@ -57,11 +57,12 @@ A glance at the taskbar shows you the metrics you care about:
 - Machine temperature
 - Storage capacity
 - Network speed
-  :::
+
+:::
 
 ## Custom runners
 
-Not a cat person? Add your own animation frames and RunCat 365 will run them for you — a parrot, a dog, or anything you can draw. Switch between your runners whenever you like.
+Not a cat person? No problem. Prepare your own keyframe animation and run a runner of your own making.
 
 ![Custom runner](./images/custom_runner.png)
 
