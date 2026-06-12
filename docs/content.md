@@ -15,7 +15,7 @@ Available on the Microsoft Store · [View on GitHub](https://github.com/runcat-d
 
 ## Features
 
-~ | [~load] | [~metrics] | [~custom] |
+~ | [~load] | [~metrics] | [~comfort] |
 ~ | :--- | :--- | :--- |
 
 :::warp load
@@ -32,7 +32,7 @@ The cat speeds up as your CPU gets busier and slows to a stroll when things are 
 CPU, GPU, memory, temperature, storage, and network — keep an eye on everything that matters right from the taskbar.
 :::
 
-:::warp custom
+:::warp comfort
 
 ### A little comfort in your day
 
