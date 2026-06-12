@@ -13,7 +13,7 @@ Takuto Nakamura (hereinafter referred to as the developer) takes the privacy of 
 
 This privacy policy applies to all services provided in all versions of RunCat 365. The developer may separately set a privacy policy or terms of use (individual contracts) for each service, and in the case of specifying the handling of information separately in the individual contracts, the provision of the individual contracts will prevail.
 
-Please note that this privacy policy does not apply to the handling of information at the link destination when moving from a link displayed on RunCat to an external website or the like.
+Please note that this privacy policy does not apply to the handling of information at the link destination when moving from a link displayed on RunCat 365 to an external website or the like.
 
 ### 1.2. Personal information
 
