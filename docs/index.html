@@ -1,89 +1,32 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RunCat 365</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="keywords" content="RunCat,Windows,cat,system,indicator,Taskbar" />
+    <meta name="keywords" content="RunCat,Windows,cat,system,indicator,taskbar,CPU" />
     <meta name="author" content="Kyome22" />
     <meta name="description" content="Cat living in the taskbar." />
     <meta property="og:url" content="https://runcat-dev.github.io/RunCat365/index.html" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="RunCat 365" />
-    <meta property="og:description" content="Cat living in the menubar." />
+    <meta property="og:description" content="Cat living in the taskbar." />
     <meta property="og:site_name" content="RunCat 365" />
     <meta
       property="og:image"
       content="https://runcat-dev.github.io/RunCat365/images/og_thumbnail.png"
     />
-    <link href="https://fonts.googleapis.com/css?family=Exo+2:400,400i,600,600i" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Exo+2:400,400i,600,600i,700,700i" rel="stylesheet" />
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <header>
-      <div>
-        <a class="title" href="./index.html"> RunCat 365 </a>
-        <a
-          href="https://github.com/runcat-dev/RunCat365"
-          title="Link for GitHub Repository"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <svg class="github-icon" viewBox="0 0 24 24">
-            <path
-              d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2 0 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6 0-3.2 0 0 1-.3 3.4 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8 0 3.2.9.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.5 5.9.5.4.9 1 .9 2.2v3.3c0 .3.1.7.8.6A12 12 0 0 0 12 .3"
-            ></path>
-          </svg>
-        </a>
-      </div>
-    </header>
-    <div class="main">
-      <div class="summary">
-        <p class="title">RunCat 365</p>
-        <p class="catchcopy">Cat living in the taskbar.</p>
-        <p class="short-description">
-          The cat tells you the CPU usage of the device by running speed.
-        </p>
-      </div>
-      <p>
-        <img class="demo" src="./images/demo.gif" alt="demo" />
-      </p>
-      <p class="microsoft-store-banner">
-        <a href="https://apps.microsoft.com/detail/9nw5lpnvwfwj">
-          <img src="images/get_it_from_ms.svg" alt="Go to Microsoft Store" />
-        </a>
-      </p>
-      <div class="detail">
-        <p class="feature">You can monitor the following information:</p>
-        <ul class="feature-list">
-          <li>CPU usage</li>
-          <li>GPU usage</li>
-          <li>Memory performance</li>
-          <li>Machine temperature</li>
-          <li>Storage capacity</li>
-          <li>Network speed</li>
-        </ul>
-        <p>
-          <img class="screenshot" src="./images/overview.png" alt="overview" />
-        </p>
-        <p class="feature">
-          You can also create your own custom runners<br />by adding original animation frames.
-        </p>
-        <p>
-          <img class="screenshot" src="./images/custom_runner.png" alt="custom runner" />
-        </p>
-        <p class="feature">
-          In addition, you can play a simple game<br />that can be played using only the space bar.
-        </p>
-        <p>
-          <img class="screenshot" src="./images/endless_game.png" alt="endless game" />
-        </p>
-      </div>
-    </div>
-    <footer>
-      <nav>
-        <a href="./privacy_policy.html">Privacy Policy</a>
-      </nav>
-      <p>© 2022 Takuto Nakamura (Kyome22)</p>
-    </footer>
+    <div id="content"></div>
+    <script type="module">
+      import { loadMarkdown } from "https://hacknock.github.io/lobsterjs/lobster.js";
+      const language = new URLSearchParams(location.search).get("lang") === "ja" ? "ja" : "en";
+      document.documentElement.lang = language;
+      const source = language === "ja" ? "./content.ja.md" : "./content.md";
+      loadMarkdown(source, document.getElementById("content"));
+    </script>
   </body>
 </html>
