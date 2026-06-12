@@ -20,21 +20,21 @@ Available on the Microsoft Store · [View on GitHub](https://github.com/runcat-d
 
 :::warp load
 
-### 🐈 Load at a glance
+### Load at a glance
 
 The cat speeds up as your CPU gets busier and slows to a stroll when things are calm. No numbers to read — just watch it run.
 :::
 
 :::warp metrics
 
-### 📊 Rich system metrics
+### Rich system metrics
 
 CPU, GPU, memory, temperature, storage, and network — keep an eye on everything that matters right from the taskbar.
 :::
 
 :::warp custom
 
-### 🎨 Make it yours
+### Make it yours
 
 Build your own runner from original animation frames, or take a break with the built-in mini-game.
 :::
@@ -57,7 +57,7 @@ A glance at the taskbar shows you the metrics you care about:
 - Machine temperature
 - Storage capacity
 - Network speed
-:::
+  :::
 
 ## Custom runners
 

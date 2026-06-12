@@ -76,6 +76,13 @@ body {
   font-style: normal;
 }
 
+.privacy-policy .lbs-header + .lbs-paragraph {
+  max-width: none;
+  margin: 0.85rem 0;
+  text-align: left;
+  font-size: 1rem;
+}
+
 /* ----- Hero (lead, demo, download) ----- */
 
 .lbs-header + .lbs-paragraph {
@@ -118,7 +125,7 @@ body {
 /* ----- Microsoft Store badge ----- */
 
 .lbs-image[src*="download_from_microsoft_store"] {
-  height: 52px;
+  height: 60px;
   width: auto;
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
