@@ -273,7 +273,7 @@ body {
 .lbs-table-silent tr:has(.lbs-image) {
   grid-template-columns: 1fr 1fr;
   gap: 2.5rem;
-  align-items: center;
+  align-items: start;
 }
 
 .lbs-table-silent tr:has(.lbs-image) th {
