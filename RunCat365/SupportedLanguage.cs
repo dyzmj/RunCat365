@@ -24,6 +24,7 @@ namespace RunCat365
         French,
         German,
         Japanese,
+        Korean,
         Spanish,
     }
 
@@ -45,6 +46,7 @@ namespace RunCat365
                 "fr" => SupportedLanguage.French,
                 "de" => SupportedLanguage.German,
                 "ja" => SupportedLanguage.Japanese,
+                "ko" => SupportedLanguage.Korean,
                 "es" => SupportedLanguage.Spanish,
                 _ => SupportedLanguage.English,
             };
@@ -59,6 +61,7 @@ namespace RunCat365
                 SupportedLanguage.French => new CultureInfo("fr-FR"),
                 SupportedLanguage.German => new CultureInfo("de-DE"),
                 SupportedLanguage.Japanese => new CultureInfo("ja-JP"),
+                SupportedLanguage.Korean => new CultureInfo("ko-KR"),
                 SupportedLanguage.Spanish => new CultureInfo("es-ES"),
                 _ => new CultureInfo("en-US"),
             };
@@ -73,6 +76,7 @@ namespace RunCat365
                 SupportedLanguage.French => "Consolas",
                 SupportedLanguage.German => "Consolas",
                 SupportedLanguage.Japanese => "Noto Sans JP",
+                SupportedLanguage.Korean => "Malgun Gothic",
                 SupportedLanguage.Spanish => "Consolas",
                 _ => "Consolas",
             };
@@ -87,6 +91,7 @@ namespace RunCat365
                 SupportedLanguage.French => false,
                 SupportedLanguage.German => false,
                 SupportedLanguage.Japanese => true,
+                SupportedLanguage.Korean => true,
                 SupportedLanguage.Spanish => false,
                 _ => false,
             };

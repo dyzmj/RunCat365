@@ -40,6 +40,7 @@ RunCat 365 is available for installation on the Microsoft Store.
   - French
   - German
   - Japanese
+  - Korean
   - Spanish
 
 ## RunCat Developers' Community

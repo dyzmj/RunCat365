@@ -153,6 +153,18 @@
   <data name="Theme_Dark" xml:space="preserve">
     <value>다크 모드</value>
   </data>
+  <data name="Menu_TemperatureUnit" xml:space="preserve">
+    <value>온도 단위</value>
+  </data>
+  <data name="TemperatureUnit_System" xml:space="preserve">
+    <value>시스템</value>
+  </data>
+  <data name="TemperatureUnit_Celsius" xml:space="preserve">
+    <value>섭씨</value>
+  </data>
+  <data name="TemperatureUnit_Fahrenheit" xml:space="preserve">
+    <value>화씨</value>
+  </data>
   <data name="Runner_Cat" xml:space="preserve">
     <value>고양이</value>
   </data>
