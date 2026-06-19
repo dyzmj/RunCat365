@@ -33,8 +33,8 @@ namespace RunCat365
             return unit switch
             {
                 TemperatureUnit.System => Strings.TemperatureUnit_System,
-                TemperatureUnit.Celsius => Strings.TemperatureUnit_Celsius,
-                TemperatureUnit.Fahrenheit => Strings.TemperatureUnit_Fahrenheit,
+                TemperatureUnit.Celsius => $"{Strings.TemperatureUnit_Celsius} (°C)",
+                TemperatureUnit.Fahrenheit => $"{Strings.TemperatureUnit_Fahrenheit} (°F)",
                 _ => "",
             };
         }
