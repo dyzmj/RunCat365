@@ -50,7 +50,7 @@ namespace RunCat365
 
         protected override bool ShouldIncludeInstance(string instanceName)
         {
-            return instanceName.Contains(ENGINE_TYPE_FILTER);
+            return instanceName.Contains(ENGINE_TYPE_FILTER, StringComparison.Ordinal);
         }
 
         internal static GPUPerformanceCounters? TryCreate()
