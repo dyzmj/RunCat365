@@ -71,15 +71,21 @@ namespace RunCat365
             foreach (var instanceName in currentInstanceNames)
             {
                 if (countersByInstance.ContainsKey(instanceName)) continue;
+                PerformanceCounter? counter = null;
                 try
                 {
-                    var counter = new PerformanceCounter(CategoryName, CounterName, instanceName);
+                    counter = new PerformanceCounter(CategoryName, CounterName, instanceName);
                     _ = counter.NextValue();
                     countersByInstance[instanceName] = counter;
+                    counter = null;
                 }
                 catch (Exception exception) when (IsExpectedCounterException(exception))
                 {
                     Debug.WriteLine($"{GetType().Name}: failed to create counter for {instanceName}: {exception.Message}");
+                }
+                finally
+                {
+                    counter?.Close();
                 }
             }
         }
