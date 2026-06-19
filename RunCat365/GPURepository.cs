@@ -13,7 +13,6 @@
 //    limitations under the License.
 
 using RunCat365.Properties;
-using System.Diagnostics;
 
 namespace RunCat365
 {
@@ -42,57 +41,33 @@ namespace RunCat365
         }
     }
 
-    internal class GPUPerformanceCounters
+    internal sealed class GPUPerformanceCounters : InstancedPerformanceCounters
     {
-        private const string CATEGORY_NAME = "GPU Engine";
-        private const string COUNTER_NAME = "Utilization Percentage";
         private const string ENGINE_TYPE_FILTER = "engtype_3D";
 
-        internal IReadOnlyList<PerformanceCounter> Counters { get; }
+        protected override string CategoryName => "GPU Engine";
+        protected override string CounterName => "Utilization Percentage";
 
-        private GPUPerformanceCounters(List<PerformanceCounter> counters)
+        protected override bool ShouldIncludeInstance(string instanceName)
         {
-            Counters = counters;
+            return instanceName.Contains(ENGINE_TYPE_FILTER, StringComparison.Ordinal);
         }
 
         internal static GPUPerformanceCounters? TryCreate()
         {
-            var counters = new List<PerformanceCounter>();
-            try
-            {
-                var category = new PerformanceCounterCategory(CATEGORY_NAME);
-                var instances = category.GetInstanceNames()
-                    .Where(n => n.Contains(ENGINE_TYPE_FILTER))
-                    .ToList();
-                if (instances.Count == 0) return null;
-
-                foreach (var instance in instances)
-                {
-                    var counter = new PerformanceCounter(CATEGORY_NAME, COUNTER_NAME, instance);
-                    counters.Add(counter);
-                    _ = counter.NextValue();
-                }
-                return new GPUPerformanceCounters(counters);
-            }
-            catch
-            {
-                foreach (var counter in counters) counter.Close();
-                return null;
-            }
-        }
-
-        internal void Close()
-        {
-            foreach (var counter in Counters) counter.Close();
+            var instance = new GPUPerformanceCounters();
+            return instance.TryInitialize() ? instance : null;
         }
     }
 
     internal class GPURepository
     {
         private const int GPU_INFO_LIST_LIMIT_SIZE = 5;
+        private const int REFRESH_INTERVAL_TICKS = 30;
 
         private readonly GPUPerformanceCounters? counters;
         private readonly List<GPUInfo> gpuInfoList = [];
+        private int ticksSinceLastRefresh;
 
         internal bool IsAvailable => counters is not null;
 
@@ -104,30 +79,27 @@ namespace RunCat365
         internal void Update()
         {
             if (counters is null) return;
-            try
+
+            ticksSinceLastRefresh += 1;
+            if (REFRESH_INTERVAL_TICKS <= ticksSinceLastRefresh)
             {
-                var values = counters.Counters.Select(counter => counter.NextValue()).ToList();
-                if (values.Count == 0) return;
-
-                var gpuInfo = new GPUInfo
-                {
-                    Average = Math.Min(100, values.Average()),
-                    Maximum = Math.Min(100, values.Max())
-                };
-
-                gpuInfoList.Add(gpuInfo);
-                if (GPU_INFO_LIST_LIMIT_SIZE < gpuInfoList.Count)
-                {
-                    gpuInfoList.RemoveAt(0);
-                }
+                ticksSinceLastRefresh = 0;
+                counters.RefreshInstances();
             }
-            catch (Exception exception) when (
-                exception is InvalidOperationException
-                or System.ComponentModel.Win32Exception
-                or UnauthorizedAccessException)
+
+            var values = counters.ReadValues();
+            if (values.Count == 0) return;
+
+            var gpuInfo = new GPUInfo
             {
-                Debug.WriteLine($"GPURepository.Update failed: {exception.Message}");
-                gpuInfoList.Clear();
+                Average = Math.Min(100, values.Average()),
+                Maximum = Math.Min(100, values.Max())
+            };
+
+            gpuInfoList.Add(gpuInfo);
+            if (GPU_INFO_LIST_LIMIT_SIZE < gpuInfoList.Count)
+            {
+                gpuInfoList.RemoveAt(0);
             }
         }
 
